@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101827">
+  <title>1999년 12월 31일, 우리 학교가 사라진다 - 연습판</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%BC%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="game" aria-live="polite">
+    <div id="stage" class="stage">
+      <div id="background" class="background" aria-hidden="true"></div>
+      <div id="vignette" class="vignette" aria-hidden="true"></div>
+      <div id="scanlines" class="scanlines" aria-hidden="true"></div>
+      <div id="glitch" class="glitch" aria-hidden="true"></div>
+
+      <header id="hud" class="hud hidden">
+        <div class="hud-left">
+          <span id="dateChip" class="chip">2026년 9월 3일</span>
+          <span id="timeChip" class="chip accent">오후 4:44</span>
+        </div>
+        <div class="hud-actions">
+          <button id="btnLog" class="icon-btn" type="button" aria-label="대화 기록">기록</button>
+          <button id="btnSound" class="icon-btn" type="button" aria-label="소리 켜기 또는 끄기">소리 켬</button>
+          <button id="btnReset" class="icon-btn danger" type="button">처음부터</button>
+        </div>
+      </header>
+
+      <section id="titleScreen" class="screen title-screen">
+        <img class="title-tape" src="assets/vhs-tape.png" alt="5-3 / 1999 라벨이 붙은 낡은 VHS 비디오테이프">
+        <p class="eyebrow">초등 5학년 과학 연속 스토리 게임 · 연습판</p>
+        <h1><span>1999년 12월 31일,</span><br>우리 학교가 사라진다</h1>
+        <p class="title-copy">과학실 창고에서 발견한 비디오테이프.<br>그 속의 아이는 아직 알려 주지 않은 네 이름을 불렀다.</p>
+        <div class="name-card">
+          <label for="playerName">주인공 이름</label>
+          <input id="playerName" maxlength="8" autocomplete="off" placeholder="예: 지우">
+        </div>
+        <button id="btnStart" class="primary-btn" type="button">테이프 재생하기</button>
+        <button id="btnContinue" class="text-btn hidden" type="button">저장된 장면 이어서 보기</button>
+        <p class="title-note">프롤로그 + 첫 체 실험 · 소리는 첫 클릭 뒤 재생됩니다 · 마우스와 터치 지원</p>
+      </section>
+
+      <section id="storyScreen" class="screen story-screen hidden">
+        <div id="sceneLabel" class="scene-label"></div>
+        <div id="propArea" class="prop-area"></div>
+        <div id="characters" class="characters" aria-hidden="true"></div>
+        <div id="choiceArea" class="choice-area"></div>
+        <section id="experimentPanel" class="experiment-panel hidden" aria-label="모래와 자갈 분리 실험"></section>
+        <button id="dialogue" class="dialogue" type="button">
+          <span id="speaker" class="speaker"></span>
+          <span id="line" class="line"></span>
+          <span class="continue-mark">▼</span>
+        </button>
+      </section>
+
+      <section id="endingScreen" class="screen ending-screen hidden">
+        <p id="endingKicker" class="eyebrow">프롤로그 끝</p>
+        <h2 id="endingTitle">아무도 기억하지 않는 아이</h2>
+        <div class="ending-message">
+          <span>남겨진 메시지</span>
+          <p id="endingMessage">방송실로 와. 은호한테는 말하지 마.</p>
+        </div>
+        <p id="endingSummary"></p>
+        <div id="endingBadges" class="ending-badges"></div>
+        <button id="btnChapter1" class="primary-btn" type="button">방송실로 간다</button>
+        <button id="btnReplay" class="text-btn" type="button">프롤로그 처음부터</button>
+        <p id="endingNote" class="ending-note"></p>
+      </section>
+
+      <aside id="logPanel" class="side-panel hidden" aria-label="대화 기록">
+        <div class="panel-head"><b>기록 수첩</b><button id="btnCloseLog" type="button">닫기</button></div>
+        <div id="logList" class="log-list"></div>
+      </aside>
+
+      <div id="toast" class="toast" role="status"></div>
+    </div>
+  </main>
+  <script src="character-layout.js"></script>
+  <script src="character-moods.js"></script>
+  <script src="sieve.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
