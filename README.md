@@ -5,11 +5,14 @@
 ## 집에서 바로 시작하기
 
 ```powershell
-git clone https://github.com/tkd126/sciencegame.git
-cd sciencegame
+git clone https://github.com/tkd126/storyscience1.git
+cd storyscience1
 ```
 
 그다음 `prototype/index.html`을 더블 클릭하면 됩니다. 설치나 인터넷 연결이 필요 없는 정적 웹게임입니다.
+
+Node.js가 있다면 `node prototype/serve.cjs` 실행 후 `http://127.0.0.1:4173/?v=story-14`로 열 수도 있습니다.
+2026-09-11 작업본: 카툰 배경·실험 3종·방 탐색·학교생활 소개 영상 스토리까지 포함합니다. 운동장 후속 플레이는 아직 제작 중입니다.
 
 Codex에서 계속 만들 때는 저장소 폴더를 프로젝트로 연 뒤 다음과 같이 요청합니다.
 
@@ -36,4 +39,3 @@ AGENTS.md와 CONTINUE_HERE.md를 먼저 읽고, 중단된 부분부터 이어서
 - 애니메이션풍 인물 감정 이미지와 미연시형 배치
 
 자세한 범위와 미완성 항목은 `CONTINUE_HERE.md`에 정리되어 있습니다.
-

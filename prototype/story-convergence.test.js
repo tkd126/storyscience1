@@ -38,7 +38,8 @@ const assetUrls = Array.from(styles.matchAll(/url\("(assets\/[^"]+)"\)/g), (matc
 for (const assetUrl of assetUrls) {
   assert.equal(fs.existsSync(path.join(__dirname, assetUrl)), true, `${assetUrl} 파일을 불러올 수 있어야 합니다.`);
 }
-assert.ok(new Set(assetUrls.filter((url) => url.includes("v3"))).size >= 4, "장면별로 서로 다른 어두운 배경을 사용해야 합니다.");
+assert.ok(assetUrls.includes('assets/classroom-cartoon-v1.png'), "오전 교실은 카툰 아침 배경을 사용해야 합니다.");
+assert.ok(assetUrls.includes('assets/broadcast-cartoon-floor-v2.png'), "방송실은 바닥 소품이 있는 카툰 배경을 사용해야 합니다.");
 
 assert.match(
   source,

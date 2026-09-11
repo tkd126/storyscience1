@@ -6,7 +6,9 @@
   <meta name="theme-color" content="#101827">
   <title>1999년 12월 31일, 우리 학교가 사라진다 - 연습판</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%BC%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260910-cartoon-11">
+  <link rel="stylesheet" href="cartoon-ui.css?v=20260910-cartoon-11">
+  <link rel="stylesheet" href="puzzle-ui.css?v=20260910-workbench-12">
 </head>
 <body>
   <main id="game" aria-live="polite">
@@ -22,6 +24,7 @@
           <span id="timeChip" class="chip accent">오후 4:44</span>
         </div>
         <div class="hud-actions">
+          <button data-fullscreen class="icon-btn" type="button">전체화면</button>
           <button id="btnLog" class="icon-btn" type="button" aria-label="대화 기록">기록</button>
           <button id="btnSound" class="icon-btn" type="button" aria-label="소리 켜기 또는 끄기">소리 켬</button>
           <button id="btnReset" class="icon-btn danger" type="button">처음부터</button>
@@ -29,8 +32,8 @@
       </header>
 
       <section id="titleScreen" class="screen title-screen">
-        <img class="title-tape" src="assets/vhs-tape.png" alt="5-3 / 1999 라벨이 붙은 낡은 VHS 비디오테이프">
-        <p class="eyebrow">초등 5학년 과학 연속 스토리 게임 · 연습판</p>
+        <img class="title-tape" src="assets/vhs-cartoon-v1.png" alt="5-3 / 1999 라벨이 붙은 낡은 VHS 비디오테이프">
+        <p class="eyebrow">초등 5학년 과학 연속 스토리 게임 · 1편 확장판</p>
         <h1><span>1999년 12월 31일,</span><br>우리 학교가 사라진다</h1>
         <p class="title-copy">과학실 창고에서 발견한 비디오테이프.<br>그 속의 아이는 아직 알려 주지 않은 네 이름을 불렀다.</p>
         <div class="name-card">
@@ -38,8 +41,12 @@
           <input id="playerName" maxlength="8" autocomplete="off" placeholder="예: 지우">
         </div>
         <button id="btnStart" class="primary-btn" type="button">테이프 재생하기</button>
+        <button data-fullscreen class="icon-btn" type="button">전체화면</button>
         <button id="btnContinue" class="text-btn hidden" type="button">저장된 장면 이어서 보기</button>
-        <p class="title-note">프롤로그 + 첫 체 실험 · 소리는 첫 클릭 뒤 재생됩니다 · 마우스와 터치 지원</p>
+        <label for="previewSection">새로 바뀐 구간 체험</label>
+        <select id="previewSection"><option value="room-return">복도와 방송실 탐색</option><option value="roster-investigate">출석부 조사</option><option value="room-supplies">과학준비실 · 가방과 서랍</option><option value="sand-lab">모래 실험과 배경판 만들기</option><option value="salt-lab">소금·모래 실험과 심화 도전</option></select>
+        <button id="btnRoomPreview" class="text-btn" type="button">선택한 구간 체험하기</button>
+        <p class="title-note">프롤로그 + 혼합물 분리 실험 3종 · 소리는 첫 클릭 뒤 재생됩니다 · 마우스와 터치 지원</p>
       </section>
 
       <section id="storyScreen" class="screen story-screen hidden">
@@ -79,7 +86,16 @@
   </main>
   <script src="character-layout.js"></script>
   <script src="character-moods.js"></script>
-  <script src="sieve.js"></script>
-  <script src="app.js"></script>
+  <script src="episode-title.js?v=20260908-2"></script>
+  <script src="sieve.js?v=20260909-explore-3"></script>
+  <script src="answer-delay.js?v=20260909-explore-3"></script>
+  <script src="fullscreen.js?v=20260910-ui-10"></script>
+  <script src="salt-workshop.js?v=20260910-ui-10"></script>
+  <script src="liquid-labs.js?v=20260910-lab-9"></script>
+  <script src="room.js?v=20260911-story-14"></script>
+  <script src="clue-book.js?v=20260911-story-14"></script>
+  <script src="choice-dialogue.js?v=20260910-cartoon-11"></script>
+  <script src="foley.js?v=20260911-story-14"></script>
+  <script src="app.js?v=20260911-story-14"></script>
 </body>
 </html>

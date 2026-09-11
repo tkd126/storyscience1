@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const source=fs.readFileSync(path.join(__dirname,'sieve.js'),'utf8');
+assert.ok(source.includes('sieve-icon sieve-'));
+assert.ok(source.includes('grain-sample grain-'));
+assert.ok(source.includes('손가락 사이로 빠질 만큼 고움'));
+assert.ok(source.includes('function grain(kind,i,x,y)'));
+assert.ok(source.includes("kind==='sand'"));
+assert.ok(source.includes('ctx.lineTo(px,py)'));
+assert.ok(!source.includes('ctx.arc(125+i%18*27'));
+console.log('실험용 금속 체·불규칙 자갈·모래 질감 렌더링 규칙 통과');

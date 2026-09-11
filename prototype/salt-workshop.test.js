@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+const lab=require('./salt-workshop.js');
+assert.equal(lab.checkPlan(['magnet','sieve','water','filter','evaporate']),true);
+assert.equal(lab.checkPlan(['sieve','magnet','water','filter','evaporate']),true);
+assert.equal(lab.checkPlan(['water','sieve','magnet','filter','evaporate']),false);
+assert.equal(lab.checkPlan(['magnet','sieve','water','evaporate','filter']),false);
+assert.equal(lab.checkPlan(['magnet','sieve','water','filter','filter']),false);
+assert.equal(lab.checkMass('２'),true);
+assert.equal(lab.checkMass('1'),false);
+console.log('심화: 분리 순서·대체 경로·질량 손실 검증 통과');
