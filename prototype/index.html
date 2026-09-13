@@ -27,6 +27,7 @@
           <button data-fullscreen class="icon-btn" type="button">전체화면</button>
           <button id="btnLog" class="icon-btn" type="button" aria-label="대화 기록">기록</button>
           <button id="btnSound" class="icon-btn" type="button" aria-label="소리 켜기 또는 끄기">소리 켬</button>
+          <button data-music-settings class="icon-btn" type="button">음악 설정</button>
           <button id="btnReset" class="icon-btn danger" type="button">처음부터</button>
         </div>
       </header>
@@ -42,6 +43,7 @@
         </div>
         <button id="btnStart" class="primary-btn" type="button">테이프 재생하기</button>
         <button data-fullscreen class="icon-btn" type="button">전체화면</button>
+        <button data-music-settings class="text-btn" type="button">음악 · 음량 · 출처</button>
         <button id="btnContinue" class="text-btn hidden" type="button">저장된 장면 이어서 보기</button>
         <label for="previewSection">새로 바뀐 구간 체험</label>
         <select id="previewSection"><option value="room-return">복도와 방송실 탐색</option><option value="roster-investigate">출석부 조사</option><option value="room-supplies">과학준비실 · 가방과 서랍</option><option value="sand-lab">모래 실험과 배경판 만들기</option><option value="salt-lab">소금·모래 실험과 심화 도전</option></select>
@@ -81,6 +83,19 @@
         <div id="logList" class="log-list"></div>
       </aside>
 
+      <dialog id="musicSettings" aria-labelledby="musicHeading">
+        <h2 id="musicHeading">소리 수첩</h2>
+        <label for="volume-music">배경음악 <output id="level-music"></output></label>
+        <input id="volume-music" type="range" min="0" max="100" step="1">
+        <label for="volume-effects">효과음 <output id="level-effects"></output></label>
+        <input id="volume-effects" type="range" min="0" max="100" step="1">
+        <p>음악은 장면에 맞춰 바뀌어요. 다른 탭으로 가면 잠시 쉬어 갑니다. 전체 소리를 껐다면 ‘소리 끔’ 버튼을 눌러 켜 주세요.</p>
+        <div class="music-credits"><b>음악 출처</b>
+          <p><a href="https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100037" target="_blank" rel="noopener">Touching Moments Two - Higher</a><br><a href="https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100164" target="_blank" rel="noopener">Measured Paces</a><br>Kevin MacLeod (incompetech.com)</p>
+          <p>Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons: By Attribution 4.0</a>.<br>원본 음원 사용 · 게임에서 음량 조절, 반복 재생 및 페이드 적용.</p>
+        </div>
+        <button id="closeMusic" type="button">닫기</button>
+      </dialog>
       <div id="toast" class="toast" role="status"></div>
     </div>
   </main>
@@ -96,6 +111,9 @@
   <script src="clue-book.js?v=20260911-story-14"></script>
   <script src="choice-dialogue.js?v=20260910-cartoon-11"></script>
   <script src="foley.js?v=20260911-story-14"></script>
-  <script src="app.js?v=20260911-story-14"></script>
+  <link rel="stylesheet" href="music.css">
+  <script src="bgm.js"></script>
+  <script src="music-ui.js"></script>
+  <script src="app.js?v=20260914-bgm-15"></script>
 </body>
 </html>

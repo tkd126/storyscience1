@@ -18,13 +18,13 @@
     }
     return data;
   }
-  function play(context, kind) {
+  function play(context, kind, volume = 1) {
     const data = samples(kind, context.sampleRate);
     const buffer = context.createBuffer(1, data.length, context.sampleRate);
     buffer.copyToChannel(data, 0);
     const source = context.createBufferSource();
     const gain = context.createGain();
-    gain.gain.value = .32;
+    gain.gain.value = .32 * Math.max(0, Math.min(1, volume));
     source.buffer = buffer;
     source.connect(gain).connect(context.destination);
     source.onended = () => { source.disconnect(); gain.disconnect(); };

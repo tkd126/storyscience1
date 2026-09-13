@@ -512,6 +512,8 @@ function renderScene(id) {
   const scene = scenes[id];
   if (!scene) return;
   state.scene = id;
+  musicPlayer.setEnabled(state.sound);
+  musicPlayer.select(BGM.cue(id, scene));
   saveGame();
 
   dom.background.className = `background ${scene.mode || "past"}`;
@@ -698,6 +700,7 @@ function clearChoices() {
 }
 
 function showEnding(id = "end") {
+  musicPlayer.select('calm');
   clearInterval(typingTimer);
   const preview = id === "chapter1-preview-end";
   state.scene = id;
@@ -770,6 +773,7 @@ function resetGame() {
 
 function toggleSound() {
   state.sound = !state.sound;
+  musicPlayer.setEnabled(state.sound);
   $("#btnSound").textContent = state.sound ? "소리 켬" : "소리 끔";
   if (state.sound) { initAudio(); playFoley('paper'); }
   saveGame();
@@ -784,7 +788,7 @@ function playFoley(kind) {
   if (!state.sound) return;
   try {
     initAudio();
-    window.Foley.play(audioContext, kind);
+    window.Foley.play(audioContext, kind, soundLevels.effects);
   } catch { /* Sound is optional. */ }
 }
 

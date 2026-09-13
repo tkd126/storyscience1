@@ -1,0 +1,37 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+assert.ok(fs.existsSync(__dirname+'/bgm.js'), 'BGM controller must exist');
+const {create, cue} = require('./bgm');
+// Media playback and the clock are browser boundaries; exercise the real controller.
+const media = [];
+let tick;
+const player = create({makeAudio(src) {
+  const a = {src, volume:0, paused:true, plays:0, play(){this.paused=false;this.plays++;return Promise.resolve();}, pause(){this.paused=true;}};
+  media.push(a); return a;
+}, schedule(fn){tick=fn;return 1;}});
+player.select('calm');
+assert.equal(media.length,0,'No downloads or playback before a gesture');
+player.unlock();
+for(let i=0;i<30;i++) tick();
+assert.equal(media[0].paused,false);
+assert.ok(media[0].volume>0 && media[0].volume<=.2);
+player.select('calm');
+assert.equal(media[0].plays,1,'Dialogue must not restart the same song');
+player.select('mystery');
+for(let i=0;i<30;i++) tick();
+assert.equal(media[0].paused,true,'Old track must stop after its fade');
+assert.equal(media[1].paused,false);
+player.setEnabled(false);
+assert.ok(media.every(a=>a.paused && a.volume===0),'Mute is immediate');
+player.setEnabled(true);
+player.setHidden(true);
+assert.ok(media.every(a=>a.paused),'Hidden tab must pause');
+player.setHidden(false);
+player.setVolume(0);
+assert.ok(media.every(a=>a.paused),'Zero volume stops playback');
+assert.equal(cue('salt-lab',{}),'calm');
+assert.equal(cue('roster-investigate',{}),'mystery');
+assert.equal(cue('any',{mode:'video'}),null,'Recorded voice scene leaves space for SFX');
+assert.equal(cue('blackout',{}),null);
+assert.equal(cue('bell-choice',{mode:'blackout'}),null,'Blackout choices must stay silent');
+console.log('BGM transitions, gesture gate, mute, visibility and cues passed');
