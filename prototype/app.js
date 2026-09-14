@@ -277,8 +277,20 @@ const scenes = {
     line: () => `${state.playerName}, 휴대전화 날짜가 잠깐 1999년으로 바뀌었어. 미래를 말하면 시간이 반응하나 봐.`, next: "teacher-slip",
   },
   "phone-path-jeongbok": {
-    label: "1999년 · 들통난 거짓말", mode: "past", chars: ["eunho", "taeo", "somi"], active: "eunho", speaker: "박정복",
-    line: "뭐가 내 물건이야? 난 저런 거 처음 보는데!", next: "teacher-slip",
+    label: "1999년 · 옆자리에서 들려온 목소리", mode: "past", chars: ["eunho", "taeo", "somi"], active: "", speaker: "박정복",
+    line: "뭐가 내 물건이야? 난 저런 거 처음 보는데!", next: "jeongbok-apology",
+  },
+  "jeongbok-apology": {
+    mode:"past",chars:["eunho","taeo","somi"],active:"",speaker:()=>state.playerName,
+    line:"아하하… 내가 이름을 착각했나 봐. 갑자기 네 이름을 꺼내서 미안.",next:"jeongbok-response",
+  },
+  "jeongbok-response": {
+    mode:"past",chars:["eunho","taeo","somi"],active:"eunho",speaker:"강은호",
+    line:"방금은 정복이가 맡겼다며? …알았어. 말하기 곤란하면 넣어 둬. 대신 또 남의 이름 대지는 말고.",next:"phone-change-topic",
+  },
+  "phone-change-topic": {
+    mode:"past",chars:["eunho","taeo","somi"],active:"somi",speaker:"소미",
+    line:"응, 일단 넣자. 은호야, 사실 우리도 이상한 일이 있어서 그래. 아까 선생님이 우리를 소개하셨을 때 말이야…",next:"teacher-slip",
   },
   "eunho-tease": {
     label: "1999년 · 쉬는 시간",

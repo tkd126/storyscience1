@@ -70,7 +70,7 @@
    } else if(phase==='experiment'){
     const target=round===1?'큰 자갈 6개만 체 위에 남기기':'작은 자갈 10개는 체 위에, 모래는 받침에 모으기';
     const reason=round===1?'가장 큰 재료를 먼저 덜어 내야, 아래로 내려온 두 재료를 다음 체에서 다시 나눌 수 있어.':'큰 자갈은 이미 보관했어. 이제 남은 두 재료가 서로 다른 곳에 모여야 배경판에 따로 쓸 수 있어.';
-    const success=round===1?'체 위 · 큰 자갈 / 받침 · 모래와 작은 자갈':'체 위 · 작은 자갈 / 받침 · 고운 모래';
+    const success='<span class="success-place success-top"><strong>체 위</strong><span>'+(round===1?'큰 자갈':'작은 자갈')+'</span></span><span class="success-place success-bottom"><strong>받침</strong><span>'+(round===1?'모래와 작은 자갈':'고운 모래')+'</span></span>';
     body.innerHTML='<section class="lab-mission"><span class="mission-kicker">이번 작업</span><h3>'+target+'</h3><p class="mission-reason">'+reason+'</p><div class="mission-success"><b>성공 모습</b><span>'+success+'</span></div></section>'+
      '<p class="sieve-guide"><b>체를 고르는 단서</b> 알갱이가 체 눈보다 작으면 아래로 떨어지고, 더 크면 체 위에 남아.</p>';
     if(!s.loaded){

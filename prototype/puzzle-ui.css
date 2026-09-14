@@ -105,3 +105,18 @@
   .salt-workshop-panel .salt-decisions form {padding:10px;}
 }
 @media(prefers-reduced-motion:reduce) {.experiment-panel button {transition:none;}}
+/* Category labels remain distinguishable without relying on color alone. */
+.duty-categories{width:100%;border-collapse:separate;border-spacing:0 10px;text-align:left;}
+.duty-categories th{width:100px;padding:14px;background:#315961;color:#fff7df;border-radius:12px 0 0 12px;}
+.duty-categories th small{font-size:.72em;font-weight:normal;}
+.duty-categories td{padding:10px;background:#e2eeea;border:1px solid #92ada6;border-radius:0 12px 12px 0;}
+.duty-categories td span{display:inline-block;margin:4px;padding:7px 12px;border-radius:9px;background:#fffdf3;color:#273e40;}
+.duty-categories tr:nth-child(2) th{background:#825d32;}
+.duty-categories tr:nth-child(2) td{background:#f4e2bd;border-color:#bea375;}
+.duty-rule{font-size:.85em;}
+.mission-success>span{display:flex;flex-wrap:wrap;gap:12px;flex:1;}
+.mission-success .success-place{display:flex;align-items:stretch;min-width:220px;flex:1;border:2px solid #759e9d;border-radius:12px;overflow:hidden;background:#edf5ef;color:#273e40;}
+.success-place strong{padding:12px 16px;background:#315961;color:#fff9e9;white-space:nowrap;}
+.mission-success .success-place>span{padding:12px 16px;font-weight:bold;}
+.mission-success .success-bottom{border-color:#c09c5e;background:#fff0ce;}
+.success-bottom strong{background:#825d32;}
