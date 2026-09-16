@@ -34,4 +34,5 @@ assert.equal(cue('roster-investigate',{}),'mystery');
 assert.equal(cue('any',{mode:'video'}),null,'Recorded voice scene leaves space for SFX');
 assert.equal(cue('blackout',{}),null);
 assert.equal(cue('bell-choice',{mode:'blackout'}),null,'Blackout choices must stay silent');
+assert.equal(cue('c2-erased',{music:'mystery'}),'mystery','2편 기억 변화는 명시된 음악 사용');
 console.log('BGM transitions, gesture gate, mute, visibility and cues passed');

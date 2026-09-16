@@ -2,6 +2,7 @@
   const tracks = {calm:'assets/music/touching-moments-higher.mp3', mystery:'assets/music/measured-paces.mp3'};
   function cue(id, scene={}) {
     if(['video','blackout'].includes(scene.mode) || ['blackout','bells','lesson-bell','broadcast-call'].includes(id)) return null;
+    if(scene.music==='mystery')return 'mystery';
     return /roster|forgets|empty-desk|pager|name-copy|room-finale|broadcast-empty/.test(id) ? 'mystery' : 'calm';
   }
   function create({makeAudio=src=>{const audio=new Audio(src);audio.hidden=true;document.body.append(audio);return audio;},schedule=fn=>setInterval(fn,50)}={}) {

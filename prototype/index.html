@@ -34,7 +34,7 @@
 
       <section id="titleScreen" class="screen title-screen">
         <img class="title-tape" src="assets/vhs-cartoon-v1.png" alt="5-3 / 1999 라벨이 붙은 낡은 VHS 비디오테이프">
-        <p class="eyebrow">초등 5학년 과학 연속 스토리 게임 · 1편 확장판</p>
+        <p class="eyebrow">초등 5학년 과학 연속 스토리 게임 · 1·2편 체험판</p>
         <h1><span>1999년 12월 31일,</span><br>우리 학교가 사라진다</h1>
         <p class="title-copy">과학실 창고에서 발견한 비디오테이프.<br>그 속의 아이는 아직 알려 주지 않은 네 이름을 불렀다.</p>
         <div class="name-card">
@@ -48,7 +48,10 @@
         <label for="previewSection">새로 바뀐 구간 체험</label>
         <select id="previewSection"><option value="room-return">복도와 방송실 탐색</option><option value="roster-investigate">출석부 조사</option><option value="room-supplies">과학준비실 · 가방과 서랍</option><option value="sand-lab">모래 실험과 배경판 만들기</option><option value="salt-lab">소금·모래 실험과 심화 도전</option></select>
         <button id="btnRoomPreview" class="text-btn" type="button">선택한 구간 체험하기</button>
-        <p class="title-note">프롤로그 + 혼합물 분리 실험 3종 · 소리는 첫 클릭 뒤 재생됩니다 · 마우스와 터치 지원</p>
+        <label for="previewChapter2">2편 · 날씨와 우리 생활</label>
+        <select id="previewChapter2"><option value="chapter2-start">2편 처음부터 · 운동회에 없는 아이</option><option value="c2-fog">안개 관찰</option><option value="c2-wind">바람과 순서표</option><option value="c2-schedule">날씨와 행사 판단</option><option value="c2-photo">사진 시각 심화 추리</option></select>
+        <button id="btnChapter2Preview" class="text-btn" type="button">2편 체험하기</button>
+        <p class="title-note">프롤로그 · 1편 혼합물의 분리 · 2편 날씨와 우리 생활<br>체험은 기존 저장을 덮어쓰지 않습니다 · 소리는 첫 클릭 뒤 재생됩니다</p>
       </section>
 
       <section id="storyScreen" class="screen story-screen hidden">
@@ -114,6 +117,16 @@
   <link rel="stylesheet" href="music.css">
   <script src="bgm.js"></script>
   <script src="music-ui.js"></script>
-  <script src="app.js?v=20260914-bgm-15"></script>
+  <link rel="stylesheet" href="chapter2.css?v=20260915-1">
+  <script src="weather-chapter.js?v=20260915-1"></script>
+  <link rel="stylesheet" href="playground.css?v=20260915-6">
+  <link rel="stylesheet" href="evidence-observation.css?v=20260916-2">
+  <script src="activity-clock.js?v=20260915-6"></script>
+  <script src="playground.js?v=20260915-6"></script>
+  <script src="learning-record.js?v=20260916-2"></script>
+  <script src="evidence-task.js?v=20260916-2"></script>
+  <script src="playground-view.js?v=20260916-1"></script>
+  <script src="chapter2.js?v=20260915-6"></script>
+  <script src="app.js?v=20260915-playground-6"></script>
 </body>
 </html>

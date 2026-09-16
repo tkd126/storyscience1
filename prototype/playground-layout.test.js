@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const view=fs.readFileSync(__dirname+'/playground-view.js','utf8');
+const css=fs.readFileSync(__dirname+'/playground.css','utf8');
+assert.ok(view.includes("panel.classList.add('playground-panel','room-panel')"),'exploration uses chapter-one room shell');
+assert.ok(view.includes("document.createElement('div')"),'picture has a shared scaling surface');
+assert.ok(css.includes('container-type:size'),'hotspots scale with uncropped picture');
+assert.ok(css.includes('.pg-controls[hidden]'),'choices are contextual rather than a permanent sidebar');
+assert.ok(view.includes("game.selected==='cloth'"),'selected cloth can be used directly on the scene');
+console.log('2편 전체 장면·조건부 선택·그림 좌표 구조 통과');

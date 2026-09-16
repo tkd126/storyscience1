@@ -1,0 +1,13 @@
+const assert = require('node:assert/strict');
+const R = require('./learning-record.js');
+assert.equal(R.initial({mode:'bad'}).mode, 'written');
+assert.equal(R.ready({mode:'oral',spoken:true}), true);
+assert.equal(R.ready({mode:'oral',spoken:false}), false);
+assert.equal(R.ready({mode:'written',spoken:true}), false);
+assert.equal(R.ready({mode:'written',explanation:'근거',fogExplanation:'관찰',safetyPlan:'계획'}), true);
+const restored=R.initial({mode:'oral',spoken:true,ratings:{wind:'확인',time:'자동합격'},notes:'관찰 메모'});
+assert.equal(restored.ratings.wind,'확인');
+assert.equal(restored.ratings.time,'미확인');
+assert.equal(restored.notes,'관찰 메모');
+assert.equal(R.ready(restored),true,'구술 제출은 교사의 성취 판정과 별개');
+console.log('구술/기록 경로와 교사 확인 상태 검증 통과');

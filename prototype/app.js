@@ -454,6 +454,8 @@ const scenes = {
   },
 };
 
+if (typeof window !== 'undefined' && window.Chapter2) Object.assign(scenes, window.Chapter2.build());
+
 function init() {
   const saved = loadSave();
   if (saved) {
@@ -464,6 +466,7 @@ function init() {
 }
 
 function bindEvents() {
+  $('#btnChapter2Preview').addEventListener('click',()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';showStory();renderScene($('#previewChapter2').value);});
   $('#btnRoomPreview').addEventListener('click',()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';state.flags.oilSeparated=true;state.flags.saltSeparated=true;showStory();renderScene($('#previewSection').value);});
   dom.btnStart.addEventListener("click", startNew);
   dom.btnContinue.addEventListener("click", continueGame);
@@ -473,7 +476,11 @@ function bindEvents() {
   $("#btnSound").addEventListener("click", toggleSound);
   $("#btnReset").addEventListener("click", resetGame);
   $("#btnReplay").addEventListener("click", resetGame);
-  $("#btnChapter1").addEventListener("click", () => { showStory(); renderScene("chapter1-start"); });
+  $("#btnChapter1").addEventListener("click", () => {
+    const next=state.scene==='chapter1-preview-end'||state.scene==='chapter2-end'?'chapter2-start':'chapter1-start';
+    if(next==='chapter2-start')state.flags=window.Chapter2.restartFlags(state.flags);
+    showStory();renderScene(next);
+  });
   dom.playerName.addEventListener("keydown", (event) => {
     if (event.key === "Enter") startNew();
   });
@@ -520,7 +527,7 @@ function renderScene(id) {
   dom.dialogue.classList.remove("hidden");
   pendingNext = null;
   pendingReply = null;
-  if (id === "end" || id === "chapter1-preview-end") return showEnding(id);
+  if (id === "end" || id === "chapter1-preview-end" || id === "chapter2-end") return showEnding(id);
   const scene = scenes[id];
   if (!scene) return;
   state.scene = id;
@@ -529,6 +536,8 @@ function renderScene(id) {
   saveGame();
 
   dom.background.className = `background ${scene.mode || "past"}`;
+  if(scene.backdrop==='field')dom.background.classList.add('weather-field');
+  if(scene.backdrop==='night')dom.background.classList.add('weather-night');
   if (['room-noise','room-calm','room-finale','broadcast-empty','broadcast-desk','oil-reason'].includes(id)) dom.background.classList.add('broadcast');
   if (['room-return','corridor-pause','corridor-answer','room-teacher','room-outside','room-recognized','room-promise','chapter1-end','broadcast-arrive'].includes(id)) dom.background.classList.add('corridor');
   if (['salt-plan','room-supplies','supplies-return','oil-lab','oil-memory','oil-question','oil-answer','oil-link','salt-reason','salt-lab','salt-after','name-copy','name-kept'].includes(id)) dom.background.classList.add('prep');
@@ -543,6 +552,24 @@ function renderScene(id) {
   clearChoices();
   setDialogue(scene.speaker || "", resolve(scene.line), scene.dialogueType || "speech");
   dom.dialogue.disabled = Boolean(scene.choices);
+  if(scene.experiment==='playground'){
+    dom.dialogue.classList.add('hidden');
+    const panel=$('#experimentPanel');panel.classList.remove('hidden');panel.setAttribute('aria-label','운동장 직접 탐색');
+    const key='playground-'+scene.playground;
+    const old=state.flags['weather-'+scene.weather];
+    const saved=state.flags[key]||((old?.complete||state.flags['weather-'+scene.weather+'-done'])?{legacyComplete:true}:undefined);
+    disposeExperiment=window.PlaygroundView.mount(panel,scene.playground,()=>{
+      state.flags[key+'-done']=true;renderScene(scene.next);
+    },saved,progress=>{state.flags[key]=progress;saveGame();},playFoley);
+  }
+  if(scene.experiment==='weather'){
+    dom.dialogue.classList.add('hidden');
+    const panel=$('#experimentPanel');panel.classList.remove('hidden');panel.setAttribute('aria-label','2단원 날씨 관찰과 추리');
+    const key='weather-'+scene.weather;
+    disposeExperiment=window.WeatherChapter.mount(panel,scene.weather,()=>{
+      state.flags[key+'-done']=true;renderScene(scene.next);
+    },state.flags[key],progress=>{state.flags[key]=progress;saveGame();});
+  }
   if(scene.experiment==='clues'){
     dom.dialogue.classList.add('hidden');
     const panel=$('#experimentPanel');panel.classList.remove('hidden');panel.setAttribute('aria-label','출석부 조사');
@@ -726,14 +753,25 @@ function showEnding(id = "end") {
   $("#endingKicker").textContent = preview ? "1편 · 방송실에 남은 목소리" : "프롤로그 끝";
   $("#endingTitle").textContent = preview ? "우리가 남긴 이름" : "아무도 기억하지 않는 아이";
   $("#endingMessage").textContent = preview ? "윤하나. 이번엔 잊어도 다시 볼 수 있게." : "방송실로 와. 은호한테는 말하지 마.";
-  $("#btnChapter1").textContent = preview ? "1편 처음부터 다시 하기" : "방송실로 간다";
-  $("#endingNote").textContent = preview ? "다음 이야기: 테이프에 남은 겨울 운동장 · 아직 제작 중" : "다음: 방송실에 없는 방송부원 · 직접 체를 흔드는 첫 실험";
+  $("#btnChapter1").textContent = preview ? "2편 · 운동장에서 하나 찾기" : "방송실로 간다";
+  $("#endingNote").textContent = preview ? "다음: 운동회에 없는 아이 · 날씨와 우리 생활" : "다음: 방송실에 없는 방송부원 · 직접 체를 흔드는 첫 실험";
 
   const brave = state.flags.tookTape ? "테이프를 놓치지 않았고" : state.flags.heldHands ? "친구들의 손을 놓지 않았고" : "낯선 목소리를 기억했고";
   dom.endingSummary.textContent = `${state.playerName}는 ${brave}, 1999년의 강은호와 처음 만났다. 하지만 출석부에는 설명할 수 없는 이름이 하나 더 남아 있었다.`;
   if (preview) dom.endingSummary.textContent = "세 가지 소품을 정리하며 하나와 은호의 촬영 약속을 찾았다. 방송실에 남은 테이프를 되살리고 잠긴 문을 연 아이들. 선생님도 하나를 기억해 냈다. 하나는 아직 만나지 못했지만, 이제 은호 혼자 기억해야 하는 이름은 아니다.";
   const title = window.EpisodeTitle.choose(state.flags, preview);
   dom.endingBadges.innerHTML = `<span class="badge episode-title">에피소드 칭호 · ${title}</span>`;
+  if(id==='chapter2-end'){
+    dom.date.textContent='1999년 12월 29일';dom.time.textContent='오후 6:14';
+    dom.background.className='background past weather-night';
+    $('#endingKicker').textContent='2편 · 운동회에 없는 아이';
+    $('#endingTitle').textContent='사진에 남은 얼굴';
+    $('#endingMessage').textContent='그 사진을 믿지 마.';
+    dom.endingSummary.textContent='하나가 마지막 주자였다는 기록과 얼굴이 남았다. 필름은 검은 우비에게 빼앗겼지만 인화 사진과 수첩은 지켰다. 바닥에 떨어진 은호의 호루라기. 옆에 있던 은호와 우비 속 목소리는 왜 같았을까?';
+    dom.endingBadges.textContent='두 번째 기억의 흔적 · 얼굴';
+    $('#btnChapter1').textContent='2편 다시 살펴보기';
+    $('#endingNote').textContent='다음 이야기: 밤의 학교 방송 · 3편은 아직 제작 중';
+  }
   playFoley('paper');
 }
 

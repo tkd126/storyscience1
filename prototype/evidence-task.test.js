@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');
+const E=require('./evidence-task.js');
+const valid={a:{time:'10:00',wind:'서'},b:{time:'10:20',wind:'북'},c:{time:'10:40',wind:'북'}};
+assert.equal(E.check(valid).ok,true);
+assert.equal(E.check({...valid,b:{time:'10:40',wind:'북'}}).ok,false);
+assert.equal(E.check({...valid,b:{time:'10:20',wind:'남'}}).ok,false);
+assert.equal(E.check({}).ok,false);
+assert.equal(E.check({...valid,a:{time:'１０：００',wind:'서풍'}}).ok,true);
+assert.equal(E.initial({attempts:-1,complete:true}).complete,false);
+assert.equal(E.initial({attempts:2,firstIndependent:false,answers:valid,explanation:'북풍은 북쪽에서 불어서 깃발이 남쪽으로 향한다.',fogExplanation:'풀잎 표면과 공기 속, 높은 하늘의 위치가 다르다.',safetyPlan:'바닥이 젖고 바람이 세어 강당에서 촬영한다.',reviewed:true,complete:true}).complete,true);
+assert.equal(E.initial({answers:valid,explanation:'설명',reviewed:true,complete:true}).complete,false,'missing transfer responses cannot count as submitted');
+console.log('사진 기록 구성·방향 적용·복합 근거·복원 검증 통과');
