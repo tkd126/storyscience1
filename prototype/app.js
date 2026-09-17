@@ -62,6 +62,7 @@ const cast = {
   somi: { name: "소미", className: "char-somi" },
   eunho: { name: "은호", className: "char-eunho" },
   teacher: { name: "1999년 담임", className: "char-teacher" },
+  hana: { name: "윤하나", className: "char-hana", image: "assets/hana-first-meeting-v1.png" },
 };
 
 const scenes = {
@@ -466,6 +467,9 @@ function init() {
 }
 
 function bindEvents() {
+  $('#btnNewGame').addEventListener('click', () => $('#newGameDialog').showModal());
+  $('#btnChapters').addEventListener('click', () => $('#chapterDialog').showModal());
+  document.querySelectorAll('[data-close-title]').forEach(button => button.addEventListener('click', () => button.closest('dialog').close()));
   $('#btnChapter2Preview').addEventListener('click',()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';showStory();renderScene($('#previewChapter2').value);});
   $('#btnRoomPreview').addEventListener('click',()=>{previewSession=true;state=initialState();state.playerName=dom.playerName.value.trim()||'지우';state.flags.oilSeparated=true;state.flags.saltSeparated=true;showStory();renderScene($('#previewSection').value);});
   dom.btnStart.addEventListener("click", startNew);
@@ -491,6 +495,7 @@ function bindEvents() {
 }
 
 function startNew() {
+  previewSession = false;
   initAudio();
   state = initialState();
   state.playerName = dom.playerName.value.trim() || "지우";
@@ -500,6 +505,7 @@ function startNew() {
 }
 
 function continueGame() {
+  previewSession = false;
   initAudio();
   const saved = loadSave();
   if (!saved) return startNew();
@@ -510,6 +516,7 @@ function continueGame() {
 }
 
 function showStory() {
+  document.querySelectorAll('.title-dialog[open]').forEach(dialog => dialog.close());
   dom.title.classList.add("hidden");
   dom.ending.classList.add("hidden");
   dom.story.classList.remove("hidden");
@@ -517,6 +524,9 @@ function showStory() {
 }
 
 function renderScene(id) {
+  // Older saves inside the abrupt first encounter replay only this encounter;
+  // later chapter-two saves and every chapter-one flag remain untouched.
+  if(['c2-found','c2-anchor','c2-call','c2-answer'].includes(id))id='c2-search';
   if(disposeExperiment){disposeExperiment();disposeExperiment=null;}
   // Earlier versions saved the chapter ending immediately after the sieve lab.
   if (id === "chapter1-preview-end" && !state.flags.oilSeparated) id = "broadcast-arrive";
@@ -538,6 +548,7 @@ function renderScene(id) {
   dom.background.className = `background ${scene.mode || "past"}`;
   if(scene.backdrop==='field')dom.background.classList.add('weather-field');
   if(scene.backdrop==='night')dom.background.classList.add('weather-night');
+  if(['photoStudio','staffroom','hall'].includes(scene.backdrop))dom.background.classList.add('c2-'+scene.backdrop);
   if (['room-noise','room-calm','room-finale','broadcast-empty','broadcast-desk','oil-reason'].includes(id)) dom.background.classList.add('broadcast');
   if (['room-return','corridor-pause','corridor-answer','room-teacher','room-outside','room-recognized','room-promise','chapter1-end','broadcast-arrive'].includes(id)) dom.background.classList.add('corridor');
   if (['salt-plan','room-supplies','supplies-return','oil-lab','oil-memory','oil-question','oil-answer','oil-link','salt-reason','salt-lab','salt-after','name-copy','name-kept'].includes(id)) dom.background.classList.add('prep');
@@ -552,6 +563,11 @@ function renderScene(id) {
   clearChoices();
   setDialogue(scene.speaker || "", resolve(scene.line), scene.dialogueType || "speech");
   dom.dialogue.disabled = Boolean(scene.choices);
+  if(scene.experiment==='hana-search'){
+    dom.dialogue.classList.add('hidden');
+    const panel=$('#experimentPanel');panel.classList.remove('hidden');panel.setAttribute('aria-label','하나를 찾아 운동장 조사');
+    disposeExperiment=window.HanaSearchView.mount(panel,()=>renderScene(scene.next),state.flags['hana-search'],progress=>{state.flags['hana-search']=progress;saveGame();},playFoley);
+  }
   if(scene.experiment==='playground'){
     dom.dialogue.classList.add('hidden');
     const panel=$('#experimentPanel');panel.classList.remove('hidden');panel.setAttribute('aria-label','운동장 직접 탐색');
@@ -560,7 +576,7 @@ function renderScene(id) {
     const saved=state.flags[key]||((old?.complete||state.flags['weather-'+scene.weather+'-done'])?{legacyComplete:true}:undefined);
     disposeExperiment=window.PlaygroundView.mount(panel,scene.playground,()=>{
       state.flags[key+'-done']=true;renderScene(scene.next);
-    },saved,progress=>{state.flags[key]=progress;saveGame();},playFoley);
+    },saved,progress=>{state.flags[key]=progress;saveGame();},playFoley,{prepare:scene.prepare===true});
   }
   if(scene.experiment==='weather'){
     dom.dialogue.classList.add('hidden');
@@ -639,7 +655,7 @@ function renderCharacters(ids, active, sceneId) {
     }
     element.dataset.name = person.name;
     element.dataset.mood = mood;
-    element.style.backgroundImage = `url("assets/characters/${id}/${mood}.png")`;
+    element.style.backgroundImage = `url("${person.image || `assets/characters/${id}/${mood}.png`}")`;
     element.className = `character ${person.className} is-${position} is-${role} shot-${shot}${isNew ? ` is-new enter-${position}` : ""}`;
   });
 }
@@ -763,11 +779,11 @@ function showEnding(id = "end") {
   dom.endingBadges.innerHTML = `<span class="badge episode-title">에피소드 칭호 · ${title}</span>`;
   if(id==='chapter2-end'){
     dom.date.textContent='1999년 12월 29일';dom.time.textContent='오후 6:14';
-    dom.background.className='background past weather-night';
+    dom.background.className='background past c2-photoStudio';
     $('#endingKicker').textContent='2편 · 운동회에 없는 아이';
     $('#endingTitle').textContent='사진에 남은 얼굴';
-    $('#endingMessage').textContent='그 사진을 믿지 마.';
-    dom.endingSummary.textContent='하나가 마지막 주자였다는 기록과 얼굴이 남았다. 필름은 검은 우비에게 빼앗겼지만 인화 사진과 수첩은 지켰다. 바닥에 떨어진 은호의 호루라기. 옆에 있던 은호와 우비 속 목소리는 왜 같았을까?';
+    $('#endingMessage').textContent='사진과 수첩은 우리 곁에 남았다.';
+    dom.endingSummary.textContent='하나가 네 번째 주자였다는 기록과 얼굴이 남았다. 검은 우비가 원본 필름을 가져갔지만 나눠 보관한 사진과 수첩은 지켰다. 문 안쪽에 떨어진 호루라기는 은호가 쓰던 것과 닮았다. 목도리를 찾으러 간 은호는 아직 돌아오지 않았다.';
     dom.endingBadges.textContent='두 번째 기억의 흔적 · 얼굴';
     $('#btnChapter1').textContent='2편 다시 살펴보기';
     $('#endingNote').textContent='다음 이야기: 밤의 학교 방송 · 3편은 아직 제작 중';

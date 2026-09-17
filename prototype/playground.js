@@ -16,14 +16,14 @@
     cloth: '마른 천',
     box: '기록 상자',
     tape: '녹음테이프',
-    notes: '관측 기록',
+    notes: '순서표와 관측 기록',
     ball: '젖은 공',
     'bad-ball': '젖은 공',
     flag: '젖은 깃발',
   };
   const seenIds = {
     fog: ['grass', 'air', 'sky', 'lens'],
-    wind: ['store', 'hedge', 'board'],
+    wind: ['store', 'hedge', 'board', 'flag'],
     locker: cards.map((card) => card.id),
     pack: ['morning', 'forecast', 'ground'],
     photo: ['log', 'photo', 'voice'],
@@ -32,7 +32,7 @@
     fog: ['cloth'],
     wind: ['key', 'clip', 'reacher', 'cloth', 'box'],
     locker: ['tape'],
-    pack: ['cloth', 'box'],
+    pack: ['cloth', 'box', 'notes', 'tape'],
     photo: [],
   };
 
@@ -45,10 +45,14 @@
 
   function baseState(mode) {
     return {
-      version: 1,
+      version: 2,
       mode,
       seen: [],
-      inventory: mode === 'wind' ? ['key'] : mode === 'pack' ? ['cloth', 'box'] : [],
+      inventory: mode === 'pack' ? ['cloth', 'box', 'notes', 'tape'] : [],
+      permission: false,
+      initialFixed: false,
+      gust: false,
+      flagStep: -1,
       selected: '',
       storeOpen: false,
       clean: false,
@@ -65,7 +69,7 @@
       message: '',
       speaker: '소미',
       wipedLens: false,
-      safe: false,
+      safe: mode === 'pack',
     };
   }
 
@@ -90,13 +94,13 @@
     if (!MODES.includes(mode)) throw new Error('Unknown playground mode');
     const state = baseState(mode);
     const validSaved = saved && typeof saved === 'object' && saved.mode === mode &&
-      (saved.version === undefined || saved.version === 1);
+      (saved.version === undefined || saved.version === 1 || saved.version === 2);
     if (!validSaved) return state;
 
     state.seen = uniqueAllowed(saved.seen, seenIds[mode]);
     const restoredInventory = uniqueAllowed(saved.inventory, allowedInventory[mode]);
-    if (mode === 'wind') state.inventory = ['key', ...restoredInventory.filter((id) => id !== 'key')];
-    else if (mode === 'pack') state.inventory = ['cloth', 'box'];
+    if (mode === 'wind') state.inventory = restoredInventory;
+    else if (mode === 'pack') state.inventory = ['cloth', 'box', 'notes', 'tape'];
     else state.inventory = restoredInventory;
     state.selected = typeof saved.selected === 'string' && state.inventory.includes(saved.selected)
       ? saved.selected
@@ -110,8 +114,14 @@
       state.wipedLens = !!saved.wipedLens && state.seen.includes('lens') && state.inventory.includes('cloth');
       state.complete = !!saved.complete && isReady(state);
     } else if (mode === 'wind') {
-      state.storeOpen = !!saved.storeOpen;
-      if (!state.storeOpen) state.inventory = ['key'];
+      const legacy = saved.version !== 2;
+      state.permission = legacy || saved.permission === true;
+      state.initialFixed = legacy || saved.initialFixed === true;
+      state.gust = legacy || saved.gust === true;
+      state.flagStep = Number.isInteger(saved.flagStep) ? saved.flagStep : -1;
+      state.storeOpen = !!saved.storeOpen && state.permission;
+      if (!state.permission) state.inventory = [];
+      else if (!state.storeOpen) state.inventory = ['key'];
       if (!state.inventory.includes(state.selected)) state.selected = '';
       state.windStep = Number.isInteger(saved.windStep)
         ? Math.max(0, Math.min(windDirections.length, saved.windStep))
@@ -133,7 +143,7 @@
       state.heard = !!saved.heard && state.loaded;
       state.complete = !!saved.complete && state.heard;
     } else if (mode === 'pack') {
-      state.safe = !!saved.safe && hasEvery(state, seenIds.pack);
+      state.safe = true; // The teacher has already stopped the outdoor event.
       state.clean = !!saved.clean;
       state.packed = state.safe && state.clean
         ? uniqueAllowed(saved.packed, ['notes', 'tape'])
@@ -195,15 +205,28 @@
   }
 
   function actWind(state, action) {
+    if (action.type === 'teacher-permission') {
+      state.permission = true; addOnce(state.inventory, 'key');
+      return respond(state, '1999년 담임', '바닥과 시야를 확인했다. 창고 열쇠를 줄 테니 집게와 집게봉을 챙기렴. 순서표는 먼저 게시대에 고정하자.');
+    }
+    if (action.type === 'gust') {
+      if (!state.initialFixed) return respond(state, '소미', '사진을 찍기 전까지 순서표를 게시대에 고정해 두자.');
+      state.gust = true;
+      return respond(state, '태오', '사진에 들고 서려고 집게를 뺐는데 놓쳤어! 깃발 끝이 향하는 쪽을 보자.');
+    }
     if (action.type === 'inspect' && seenIds.wind.includes(action.value)) {
       addOnce(state.seen, action.value);
+      if (action.value === 'flag') {
+        state.flagStep = state.windStep;
+        return respond(state, '소미', `깃발 끝은 ${itemsDirection(windDirections[Math.min(state.windStep,2)])}쪽으로 펄럭여. 바람이 오는 쪽과 종이가 밀려갈 쪽은 반대야.`);
+      }
       return respond(state, '은호', '눈에 보이는 위치와 바람의 방향을 함께 기억해 두자.');
     }
     if (action.type === 'select') return selectItem(state, action.value);
     if (action.type === 'use' && action.value === 'store') {
-      if (state.selected !== 'key') return respond(state, '은호', '보관장은 잠겨 있어. 맞는 열쇠를 골라 보자.');
+      if (!state.permission || state.selected !== 'key') return respond(state, '은호', '선생님께 허락받은 열쇠를 골라 보자.');
       state.storeOpen = true;
-      return respond(state, '은호', '열렸다! 순서표를 되찾는 데 필요한 도구를 챙기자.');
+      return respond(state, '은호', '열렸다! 방송석에서 쓸 집게와, 손이 닿지 않는 물건을 꺼낼 집게봉이 있어.');
     }
     if (action.type === 'take' && ['clip', 'reacher', 'cloth', 'box'].includes(action.value)) {
       if (!state.storeOpen) return respond(state, '은호', '먼저 열쇠로 보관장을 열어야 해.');
@@ -211,6 +234,7 @@
       return respond(state, '태오', `${items[action.value]}을(를) 챙겼어.`);
     }
     if (action.type === 'direction') {
+      if (!state.gust || state.flagStep !== state.windStep) return respond(state, '소미', '지금 깃발이 어느 쪽으로 펄럭이는지 먼저 살펴보자.');
       if (!isReady(state)) return respond(state, '소미', '종이를 따라가기 전에 긴 집게와 고정할 집게를 챙기자.');
       if (state.windStep >= windDirections.length) return respond(state, '하나', '종이는 동쪽 생울타리에 걸려 있어.');
       const expected = windDirections[state.windStep];
@@ -227,11 +251,16 @@
       return respond(state, '하나', '긴 집게로 순서표를 꺼냈어. 이제 다시 날아가지 않게 하자.');
     }
     if (action.type === 'use' && action.value === 'board') {
+      if (!state.gust) {
+        if (state.selected !== 'clip' || !isReady(state)) return respond(state, '소미', '창고에서 집게와 집게봉을 챙긴 뒤 집게를 게시대에 사용하자.');
+        state.initialFixed = true;
+        return respond(state, '소미', '3번 은호, 4번 하나. 함께 읽고 순서표를 집게로 고정했어. 사진 찍을 준비가 되면 선생님께 가자.');
+      }
       if (!state.paper) return respond(state, '소미', '게시판에 붙이기 전에 순서표부터 되찾아야 해.');
       if (state.selected !== 'clip') return respond(state, '소미', '바람에도 버티도록 집게로 단단히 고정하자.');
       state.fixed = true;
       state.complete = true;
-      return respond(state, '하나', '순서표를 집게로 고정했어. 이제 이름도 날아가지 않을 거야.');
+      return respond(state, '하나', '순서표를 집게로 다시 고정했어. 경기 전 이름을 한 번 더 확인하자.');
     }
     return respond(state, '은호', '열쇠와 도구, 바람의 흔적을 차례로 확인해 보자.');
   }
@@ -280,7 +309,7 @@
       if (!state.loaded) return respond(state, '하나', '재생기에 테이프가 들어 있지 않아.');
       state.heard = true;
       state.complete = true;
-      return respond(state, '은호', '분명 하나의 목소리야. 순서표에서 지워진 이름이 녹음에는 남아 있어!');
+      return respond(state, '태오', '내가 방송석에서 녹음한 소리야. 은호: “3번 끝! 하나야, 받아!” 하나: “받았어! 4번, 출발!” 순서표와 같은 3번에서 4번 전달이야.');
     }
     return respond(state, '소미', '사진 카드와 방향 다이얼, 녹음기를 차례로 확인해 보자.');
   }
@@ -292,7 +321,7 @@
   function actPack(state, action) {
     if (action.type === 'inspect' && seenIds.pack.includes(action.value)) {
       addOnce(state.seen, action.value);
-      return respond(state, '소미', '아침 기록, 새 예보, 지금 운동장 상태를 따로 확인했어.');
+      return respond(state, '소미', {morning:'아침의 마른 바닥 기록과 지금 모습은 달라. 날씨는 계속 바뀌네.',forecast:'새 예보에는 비와 강한 바람이 있어. 선생님이 실내로 이동하자고 하셨어.',ground:'처마 밖에 빗방울 자국이 생겼어. 지금은 밖으로 나가지 말자.'}[action.value]);
     }
     if (action.type === 'plan') {
       if (!hasEvery(state, seenIds.pack)) return respond(state, '소미', '정하기 전에 세 가지 날씨 기록을 모두 확인하자.');
@@ -302,6 +331,7 @@
     }
     if (action.type === 'select') return selectItem(state, action.value);
     if (action.type === 'use' && action.value === 'box') {
+      if (['notes','tape'].includes(state.selected)) return actPack(state,{type:'pack',value:state.selected});
       if (state.selected !== 'cloth') return respond(state, '하나', '젖은 상자에 기록을 넣을 수는 없어. 닦을 것을 골라 보자.');
       state.clean = true;
       return respond(state, '하나', '마른 천으로 상자 안의 물기를 닦았어.');
@@ -321,7 +351,7 @@
       }
       state.closed = true;
       state.complete = true;
-      return respond(state, '선생님', '상자를 닫았구나. 이제 기록과 함께 강당으로 이동하자.');
+      return respond(state, '1999년 담임', '상자를 닫았구나. 이제 기록과 함께 강당으로 이동하자.');
     }
     return respond(state, '소미', '날씨를 확인하고 안전한 계획을 세운 뒤 기록을 챙기자.');
   }
@@ -329,7 +359,7 @@
   function actPhoto(state, action) {
     if (action.type === 'inspect' && seenIds.photo.includes(action.value)) {
       addOnce(state.seen, action.value);
-      return respond(state, action.value === 'voice' ? '은호' : '소미', '사진과 날씨 기록이 같은 순간을 가리키는지 살펴보자.');
+      return respond(state, '소미', '사진과 날씨 기록이 같은 순간을 가리키는지 살펴보자.');
     }
     if (action.type === 'connect') {
       if (!isReady(state)) return respond(state, '소미', '사진, 날씨 기록, 녹음 내용을 모두 확인해야 연결할 수 있어.');
@@ -338,7 +368,7 @@
         value.rain === 'dry' && value.time === '10:20';
       if (!correct) return respond(state, '소미', '한 기록만 맞아도 부족해. 깃발 끝, 빗방울, 녹음과 시각을 모두 연결해 보자.');
       state.complete = true;
-      return respond(state, '은호', '결승선 사진은 북풍이 불고 비가 오기 전인 10시 20분에 찍혔어!');
+      return respond(state, '소미', '바통 전달 사진은 북풍이 불고 비가 오기 전인 10시 20분에 찍혔어!');
     }
     return respond(state, '소미', '서로 다른 세 기록을 하나씩 펼쳐 보자.');
   }

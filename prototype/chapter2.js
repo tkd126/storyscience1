@@ -4,14 +4,23 @@
   const s={};
   function line(id,speaker,text,next,extra={}){s[id]={label:'2편 · 운동회에 없는 아이',date:'1999년 12월 29일',time:'오전 9:00',mode:'past',backdrop:'field',chars:['taeo','somi','eunho'],active:({'태오':'taeo','소미':'somi','강은호':'eunho'})[speaker]||'',speaker,line:text,next,...extra};}
   const yesterday={date:'1999년 12월 28일',time:'오전 11:50'};
-  line('chapter2-start','태오','골대 옆이야! …저기 앉아 있는 애 보여? 하나야! 우리 목소리 들려?','c2-found',yesterday);
+  line('chapter2-start','소미','방송실에서 찾은 마지막 촬영 약속은 골대 옆이었어. 이름을 적은 종이도 챙겼지? 선생님과 같이 가 보자.','c2-search',{...yesterday,time:'오전 11:45'});
+  line('c2-search','소미','골대 앞은 비어 있어. 누군가 남긴 물건이 있는지 살펴보자.','c2-teacher',{...yesterday,chars:[],experiment:'hana-search'});
   line('c2-found','윤하나','오지 마. 방금도 은호가 나를 보고 그냥 지나갔어. 또 그러면… 나도 내가 여기 있는지 모르겠어.','c2-anchor',yesterday);
   line('c2-anchor','소미','윤하나. 네가 과학 수업을 소개했지? 네 이름을 여기 적었어. 은호야, 이 종이 보고 천천히 불러 줘.','c2-call',yesterday);
   line('c2-call','강은호','윤하나. …맞아. 어제 원고 읽다가 네가 웃었잖아. 내가 ‘식용유’를 ‘식용우’라고 해서.','c2-answer',yesterday);
   line('c2-answer','윤하나','…그걸 기억해? 맞아. 내가 다시 읽어 보라고 했어. 이제 나 보이는 거지?','c2-teacher',yesterday);
-  line('c2-teacher','1999년 담임','하나야, 여기 있었구나. 교무실로 가자. 보호자께 연락하고 몸 상태도 살펴보마. 너희도 같이 가자.','c2-evening',{...yesterday,chars:['teacher','somi'],active:'teacher'});
-  line('c2-evening','소미','선생님이 집에도 연락하셨어. 다행히 하나는 가족과 함께 갔어. 그런데… 우리가 쓴 이름은 남아 있는데, 선생님이 잠깐 또 누구냐고 물으셨어.','c2-promise',{...yesterday,time:'오후 4:10',backdrop:'classroom'});
-  line('c2-promise','강은호','내일 아침 교실에서 만나기로 했어. 이름을 읽고 목소리를 들으면 잠깐 돌아와. 그 사이에 얼굴도 남기자. 내일 선생님 카메라로.','c2-morning',{...yesterday,time:'오후 4:12',backdrop:'classroom'});
+  line('c2-teacher','1999년 담임','교무실에 도착했구나. 하나는 여기서 몸을 녹이고 있으렴. 보호자께 연락하는 동안 너희도 함께 있어 주겠니?','c2-hesitate',{...yesterday,time:'낮 12:00',backdrop:'classroom',chars:['teacher','somi'],active:'teacher'});
+  line('c2-hesitate','강은호','너…… 잠깐, 이름이 또 안 나와. 종이를 어디 뒀지? 방금 분명 기억했는데.','c2-record',{...yesterday,time:'낮 12:02',backdrop:'classroom',chars:['eunho','somi']});
+  line('c2-record','소미','윤하나. 여기 써 있어. 이름이랑, 우리가 같이 겪은 일도 적자. 또 헷갈리면 꺼내 볼 수 있게.','c2-evening',{...yesterday,time:'낮 12:02',backdrop:'classroom',choices:[{text:'촬영 때 있었던 일을 적는다.',branch:'c2-write-memory'},{text:'지금 나눈 대화를 적는다.',branch:'c2-write-today'}]});
+  line('c2-write-memory','강은호','‘식용우라고 읽고 소 흉내를 냈다’…… 이걸 정말 쓰게? 알았어. 창피해도 잊어버리는 것보다는 낫지.','c2-write-memory2',{...yesterday,time:'낮 12:03',backdrop:'classroom'});
+  line('c2-write-memory2','소미','응. 무슨 일이 있었는지 네 말로 남겨 두자. 하나도 옆에서 확인해 주고 있어.','c2-evening',{...yesterday,time:'낮 12:03',backdrop:'classroom'});
+  line('c2-write-today','소미','골대 뒤에서 만났고, 은호가 이름을 읽었고…… 하나가 했던 말도 그대로 적어 둘게.','c2-write-today2',{...yesterday,time:'낮 12:03',backdrop:'classroom'});
+  line('c2-write-today2','강은호','끝에 이것도 써 줘. ‘같이 교무실에 왔다.’ 혼자 두고 온 건 아니니까.','c2-evening',{...yesterday,time:'낮 12:03',backdrop:'classroom'});
+  line('c2-evening','1999년 담임','보호자와 연락이 닿았다. 하나는 만나서 함께 귀가하도록 하마. 내일도 선생님과 교실로 오기로 했어.','c2-event-plan',{...yesterday,time:'낮 12:20',backdrop:'classroom',chars:['teacher','somi'],active:'teacher'});
+  line('c2-event-plan','소미','교실 안내에 내일 짧은 학급 경기와 기념 촬영이 있대. 선생님, 하나와 저희가 함께 있는 사진도 찍어 주실 수 있어요?','c2-photo-plan',{...yesterday,time:'낮 12:21',backdrop:'classroom'});
+  line('c2-photo-plan','1999년 담임','하나도 좋다고 하는구나. 함께 찍어 주마. 다만 필름 사진은 현상한 뒤에 볼 수 있단다. 그동안 오늘 쓴 기록도 잘 보관하렴.','c2-promise',{...yesterday,time:'낮 12:21',backdrop:'classroom',chars:['teacher','somi'],active:'teacher'});
+  line('c2-promise','강은호','내일 아침 아홉 시, 교실 앞에서 기다릴게. 내가 못 알아봐도 그냥 가지 마. 이 종이부터 보여 줘.','c2-morning',{...yesterday,time:'낮 12:22',backdrop:'classroom'});
   line('c2-morning','태오','새천년맞이 겨울 운동회… 진짜 하는 거였네? 이 추운 날에?','c2-event');
   line('c2-event','1999년 담임','온종일 뛰는 행사는 아니야. 짧은 학급 경기와 기념 촬영이지. 몸부터 풀고, 날씨나 바닥이 나쁘면 실내로 옮긴다.','c2-fog-intro',{chars:['teacher','taeo'],active:'teacher'});
   line('c2-fog-intro','윤하나','나 여기 있어. 어제처럼 내 이름 불러 줘서 고마워. 그런데 저쪽 골대가 안 보여. 렌즈가 뿌연 건가?','c2-fog');
@@ -65,7 +74,7 @@
   for(const [id,mode] of Object.entries({'c2-fog':'fog','c2-wind':'wind','c2-schedule':'pack','c2-photo':'photo'})){
    s[id].experiment='playground';s[id].playground=mode;
   }
-  s['c2-fog'].line='하나가 또 사라진 걸까? 렌즈와 풀잎, 골대 쪽을 직접 살펴보자.';
+  s['c2-fog'].line='하나는 우리 옆에 있어. 흐린 건 먼 골대 쪽이야. 렌즈 표면과 바깥 풍경을 따로 살펴보자.';
   s['c2-wind'].line='순서표를 놓쳤어! 창고에서 쓸 만한 물건을 챙기고 깃발을 보자.';
   s['c2-erased'].next='c2-locker-intro';
   line('c2-locker-intro','소미','선생님이 방금 녹음한 테이프를 보관함에 넣으셨대. 우리가 확인해도 된다고 잠금을 풀어 주셨어. 은호의 기억과 녹음 중에 무엇이 다른지 직접 들어 보자.','c2-locker',{time:'오전 10:24'});
@@ -83,8 +92,75 @@
   s['c2-night'].next='c2-photo';
   Object.assign(s['c2-photo'],{time:'오후 6:10',backdrop:'night',next:'c2-proof',line:'사진 한 장만으로 짐작하지 말자. 깃발, 동시 녹음, 관측 시각을 연결해 봐.'});
   line('c2-proof','소미','찾았어. 하나가 네 번째로 뛰던 순간이야. 인화 사진은 내가, 이름과 시각을 옮긴 수첩은 네가 갖자. 하나를 기억할 증거를 나눠 지키는 거야.','c2-theft',{time:'오후 6:10',backdrop:'night'});
+  // Hana only appears after she has been found. Use the approved solid sprite,
+  // not an invisible speaker or an unrelated child's portrait.
+  for(const scene of Object.values(s)){
+   if(scene.speaker==='윤하나'){
+    scene.chars=['eunho','hana'];scene.active='hana';
+   }
+  }
+  // The approved second half keeps old scene IDs so existing saves still work.
+  const room={backdrop:'classroom'};
+  const at=(time,extra={})=>({time,...extra});
+  line('c2-morning','강은호','아홉 시 맞지? 이름 종이도 가져왔어. 어제 교실 앞에서 만나자고 한 약속, 기억해.','c2-arrival',{...room,time:'오전 9:00'});
+  line('c2-arrival','1999년 담임','하나와 함께 왔다. 보호자께도 오늘 일정을 알려 드렸어. 이동할 때는 선생님과 함께 가자.','c2-arrival-hana',{...room,time:'오전 9:00',chars:['teacher','hana'],active:'teacher'});
+  line('c2-arrival-hana','윤하나','윤하나. 내가 먼저 이름 말하기로 했지? 기다려 줘서 고마워. 오늘은 같이 사진 찍자.','c2-event',{...room,time:'오전 9:01'});
+  Object.assign(s['c2-event'],{...room,time:'오전 9:02'});
+  for(const id of ['c2-fog-intro','c2-fog','c2-fog-after'])s[id].time='오전 9:10';
+  s['c2-fog-after'].next='c2-prepare-intro';
+  line('c2-prepare-intro','1999년 담임','실내에서 기다리는 동안 안개가 옅어졌다. 이제 골대가 잘 보이고 바닥도 괜찮아. 창고 도구를 챙겨 방송석을 준비하자.','c2-prepare',at('오전 9:50',{chars:['teacher','somi'],active:'teacher'}));
+  line('c2-prepare','소미','선생님께 창고 열쇠를 받자. 집게와 집게봉을 챙기고, 순서표를 게시대에 고정하면 돼.','c2-partner',at('오전 9:50',{experiment:'playground',playground:'wind',prepare:true}));
+  s['c2-partner'].choices[2].text='태오와 순서표가 잘 고정됐는지 확인한다.';
+  s['c2-partner-jeongbok'].speaker='태오';s['c2-partner-jeongbok'].active='taeo';
+  s['c2-partner-jeongbok'].line='집게 꽉 물렸지? 사진에 순서표도 보이게 들면 좋겠다. 잠깐만 빼서 들고 있을게.';
+  s['c2-partner-jeongbok2'].line='선생님이 찍으실 때만 들자. 바람이 부니까 두 손으로 꼭 잡고.';
+  s['c2-gust'].line='앗! 게시대에 고정해 뒀던 순서표를 사진에 들려고 꺼내다 놓쳤어. 깃발 끝이 향하는 쪽으로 밀려가!';
+  s['c2-wind'].line='창고에서 챙긴 도구도 있어. 깃발을 살피고 운동장 그림에서 종이가 갈 곳을 눌러 보자.';
+  s['c2-wind-after'].line='낮은 울타리에서 꺼내 다시 고정했어. 3번 은호, 4번 윤하나. 내 이름도 여기 있어.';
+  s['c2-wind-after'].next='c2-race-ready';
+  line('c2-race-ready','태오','난 방송석에서 응원을 녹음할게. 선생님은 바통 구역에서 사진 찍으신대. 하나야, 우리 목소리 듣고 달려!','c2-race',at('오전 10:20',{choices:[{text:'하나의 이름을 불러 응원한다.',branch:'c2-cheer-name'},{text:'순서표 옆에서 순서대로 응원한다.',branch:'c2-cheer-order'}]}));
+  line('c2-cheer-name','윤하나','들려! 끝까지 크게 불러 줘.','c2-race',at('오전 10:20'));
+  line('c2-cheer-order','태오','3번 은호, 다음은 4번 하나! 녹음기도 잘 돌아가고 있어.','c2-race',at('오전 10:20'));
+  s['c2-race'].next='c2-baton-answer';
+  line('c2-baton-answer','윤하나','받았어! 4번, 출발!','c2-erased',at('오전 10:20'));
+  s['c2-erased'].next='c2-conflict-hana';
+  line('c2-conflict-hana','윤하나','네가 나한테 바통 줬어. 내 손에 아직 있는데……. 순서표 4번도 아까 같이 읽었잖아.','c2-locker-intro',at('오전 10:24'));
+  s['c2-locker-intro'].line='순서표 마지막 이름이 비었어. 선생님이 태오의 녹음테이프를 보관함에 넣으셨대. 확인해도 된다고 잠금을 풀어 주셨어.';
+  s['c2-locker'].speaker='태오';s['c2-locker'].active='taeo';s['c2-locker'].line='내가 방송석에서 녹음했어. 보관함에서 테이프를 꺼내 녹음기에 넣어 보자.';
+  s['c2-evidence'].line='3번 은호가 “하나야, 받아!”라고 했고 하나는 “받았어! 4번, 출발!”이라고 대답했어. 사진에서도 바통을 받는 행동을 확인해 보자.';
+  s['c2-schedule-after'].line='잘 챙겼구나. 강당 대신 가까운 우리 교실에서 몸을 녹이자. 바깥 기구는 선생님들이 정리할 테니 나가지 마.';
+  s['c2-confess'].line='미래 학교 영상에서 내 자리가 비어 있었어. 아까 은호도 내가 뛴 일을 잊었고. 앞으로도 계속 이럴까 봐 무서워.';
+  s['c2-confess2'].line='눈앞에서 이야기해도 기억이 바뀌면…… 다시 말 걸 용기가 안 날 것 같아. 나를 또 모른다고 할까 봐.';
+  s['c2-reassure'].choices=[{text:'“잊으면 다시 알려 줘. 그냥 지나가지는 않을게.”',branch:'c2-stay'},{text:'“아직 사진은 못 봤잖아. 같이 확인해 보자.”',branch:'c2-future'}];
+  s['c2-stay'].line='혹시 또 이름이 안 떠오르면 물어볼게. 모르는 척하고 그냥 지나가지는 않을게. 종이도 계속 가지고 있을게.';
+  s['c2-stay2'].line='응. 그때는 나도 다시 말해 볼게. 윤하나라고. 사진에도 너희 옆에 서고 싶어.';
+  s['c2-future'].line='순서표와 녹음에는 함께 뛴 일이 남았어. 저녁에 사진도 보자. 그때까지 나랑 같이 있자.';
+  s['c2-future2'].line='응. 아직 확인하지 못한 것도 있지. 지금 찍을 단체 사진에도 같이 남고 싶어.';
+  s['c2-photo-intro'].line='경기 중 바통 사진과 지금 찍는 단체 사진은 따로야. 교실에서 얼굴이 안 가리게 서자. 필름은 선생님이 맡기신대.';
+  s['c2-shutter'].line='여긴 우리 교실이지만 함께 있는 모습은 잘 보이겠구나. 하나야, 앞줄 가운데로. 얼굴 가리는 친구 없지? 좋아, 찍는다!';
+  s['c2-face'].line='찍힌 사진은 저녁에 현상한 뒤 보는 거지? 내 얼굴도 잘 나왔으면 좋겠다. 나도 너희 이름을 적어 둘게.';
+  s['c2-face'].next='c2-depart';
+  line('c2-depart','강은호','사진 찾으러 가기 전에 학교에 두고 온 목도리를 가져올게. 보호자랑 같이 다녀올 거야. 선생님께도 말씀드렸어.','c2-depart-teacher',at('오후 5:30',room));
+  line('c2-depart-teacher','1999년 담임','그래, 보호자와 함께 다녀오렴. 다른 친구들은 나와 사진관으로 가자. 여섯 시면 현상이 끝난다고 하셨다.','c2-night',at('오후 5:30',{...room,chars:['teacher','somi'],active:'teacher'}));
+  const studio={backdrop:'photoStudio',chars:['taeo','somi','hana']};
+  Object.assign(s['c2-night'],studio,{speaker:'태오',active:'taeo',time:'오후 6:00',line:'사진관에 도착했어! 선생님이 현상한 사진을 받으셨어. 하나 얼굴도 나왔네. 경기 사진은 기록하고 맞춰 보자.'});
+  for(const id of ['c2-photo','c2-proof','c2-theft','c2-safe','c2-whistle','c2-deny','c2-last'])Object.assign(s[id],studio);
+  s['c2-theft'].time='오후 6:12';s['c2-safe'].time='오후 6:12';
+  s['c2-safe'].chars=['teacher','somi'];s['c2-safe'].active='teacher';
+  s['c2-safe'].line='쫓아가지 마! 모두 내 옆에 있으렴. 주인아저씨, 경찰에 신고해 주세요. 원본 필름 봉투를 가져갔습니다.';
+  s['c2-whistle'].line='열린 문 바로 안쪽에 호루라기가 떨어졌어. 은호가 쓰던 것과 닮았는데…… 같은 건지는 모르겠어. 밖으로 나가지는 말자.';
+  s['c2-deny'].speaker='태오';s['c2-deny'].active='taeo';s['c2-deny'].line='은호는 목도리 찾으러 간 뒤 아직 안 왔지? 이것만으로 누구였다고 말할 수는 없어. 선생님께 보여 드리자.';
+  s['c2-last'].line='필름은 없어졌지만 소미가 사진을, 네가 수첩을 갖고 있어. 나도 여기 있고. 남은 기록부터 함께 지키자.';
+  for(const scene of Object.values(s)){
+   if(scene.speaker==='윤하나'){scene.chars=scene.backdrop==='photoStudio'?['somi','hana']:['eunho','hana'];scene.active='hana';}
+  }
+  for(const id of ['c2-teacher','c2-hesitate','c2-record','c2-write-memory','c2-write-memory2','c2-write-today','c2-write-today2','c2-evening'])s[id].backdrop='staffroom';
+  for(const id of ['c2-confess','c2-confess2','c2-reassure','c2-stay','c2-stay2','c2-future','c2-future2','c2-photo-intro','c2-shutter','c2-face'])s[id].backdrop='hall';
+  s['c2-schedule-after'].line='잘 챙겼구나. 이제 강당에서 몸을 녹이자. 바깥 기구는 선생님들이 정리할 테니 나가지 마.';
+  s['c2-photo-intro'].line='경기 중 바통 사진과 지금 찍는 단체 사진은 따로야. 강당 앞쪽에 얼굴이 안 가리게 서자. 필름은 선생님이 맡기신대.';
+  s['c2-shutter'].line='하나야, 강당 앞줄 가운데로 와. 모두 얼굴 가리지 않게 조금씩 옆으로. 좋아, 찍는다!';
   return s;
  }
- function restartFlags(flags){return Object.fromEntries(Object.entries(flags).filter(([key])=>!key.startsWith('weather-')&&!key.startsWith('playground-')));}
+ function restartFlags(flags){return Object.fromEntries(Object.entries(flags).filter(([key])=>key!=='hana-search'&&!key.startsWith('weather-')&&!key.startsWith('playground-')));}
  const api={build,restartFlags};if(typeof module!=='undefined')module.exports=api;root.Chapter2=api;
 })(typeof window==='undefined'?globalThis:window);

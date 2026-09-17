@@ -33,26 +33,45 @@
       </header>
 
       <section id="titleScreen" class="screen title-screen">
-        <img class="title-tape" src="assets/vhs-cartoon-v1.png" alt="5-3 / 1999 라벨이 붙은 낡은 VHS 비디오테이프">
-        <p class="eyebrow">초등 5학년 과학 연속 스토리 게임 · 1·2편 체험판</p>
+        <div class="title-heading">
+        <p class="eyebrow">그 겨울, 아무도 기억하지 못한 약속</p>
         <h1><span>1999년 12월 31일,</span><br>우리 학교가 사라진다</h1>
         <p class="title-copy">과학실 창고에서 발견한 비디오테이프.<br>그 속의 아이는 아직 알려 주지 않은 네 이름을 불렀다.</p>
+        </div>
+        <nav class="title-menu" aria-label="게임 시작 메뉴">
+          <button id="btnNewGame" type="button">새로 시작 <span aria-hidden="true">▷</span></button>
+          <button id="btnContinue" class="hidden" type="button">이어하기 <span aria-hidden="true">▷</span></button>
+          <button id="btnChapters" type="button">장 선택 <span aria-hidden="true">▷</span></button>
+        </nav>
+        <div class="title-settings">
+          <button data-fullscreen class="icon-btn" type="button">전체화면</button>
+          <button data-music-settings class="text-btn" type="button">음악 · 음량 · 출처</button>
+        </div>
+      </section>
+
+      <dialog id="newGameDialog" class="title-dialog" aria-labelledby="newGameHeading">
+        <h2 id="newGameHeading">테이프 속으로</h2>
+        <p>이 이야기에서 너를 뭐라고 부르면 될까?</p>
         <div class="name-card">
           <label for="playerName">주인공 이름</label>
           <input id="playerName" maxlength="8" autocomplete="off" placeholder="예: 지우">
         </div>
         <button id="btnStart" class="primary-btn" type="button">테이프 재생하기</button>
-        <button data-fullscreen class="icon-btn" type="button">전체화면</button>
-        <button data-music-settings class="text-btn" type="button">음악 · 음량 · 출처</button>
-        <button id="btnContinue" class="text-btn hidden" type="button">저장된 장면 이어서 보기</button>
-        <label for="previewSection">새로 바뀐 구간 체험</label>
+        <p class="title-note">새로 시작하면 기존 진행 기록이 바뀝니다.</p>
+        <button data-close-title type="button">돌아가기</button>
+      </dialog>
+      <dialog id="chapterDialog" class="title-dialog" aria-labelledby="chapterHeading">
+        <h2 id="chapterHeading">어느 기억을 펼칠까?</h2>
+        <p>체험 중에는 기존 저장을 덮어쓰지 않습니다.</p>
+        <label for="previewSection">1편 · 아무도 기억하지 않는 아이</label>
         <select id="previewSection"><option value="room-return">복도와 방송실 탐색</option><option value="roster-investigate">출석부 조사</option><option value="room-supplies">과학준비실 · 가방과 서랍</option><option value="sand-lab">모래 실험과 배경판 만들기</option><option value="salt-lab">소금·모래 실험과 심화 도전</option></select>
         <button id="btnRoomPreview" class="text-btn" type="button">선택한 구간 체험하기</button>
         <label for="previewChapter2">2편 · 날씨와 우리 생활</label>
-        <select id="previewChapter2"><option value="chapter2-start">2편 처음부터 · 운동회에 없는 아이</option><option value="c2-fog">안개 관찰</option><option value="c2-wind">바람과 순서표</option><option value="c2-schedule">날씨와 행사 판단</option><option value="c2-photo">사진 시각 심화 추리</option></select>
+        <select id="previewChapter2"><option value="chapter2-start">2편 처음부터 · 운동회에 없는 아이</option><option value="c2-fog">안개 관찰</option><option value="c2-prepare">바람과 순서표</option><option value="c2-schedule">날씨와 행사 판단</option><option value="c2-photo">사진 시각 심화 추리</option></select>
         <button id="btnChapter2Preview" class="text-btn" type="button">2편 체험하기</button>
         <p class="title-note">프롤로그 · 1편 혼합물의 분리 · 2편 날씨와 우리 생활<br>체험은 기존 저장을 덮어쓰지 않습니다 · 소리는 첫 클릭 뒤 재생됩니다</p>
-      </section>
+        <button data-close-title type="button">돌아가기</button>
+      </dialog>
 
       <section id="storyScreen" class="screen story-screen hidden">
         <div id="sceneLabel" class="scene-label"></div>
@@ -110,7 +129,8 @@
   <script src="fullscreen.js?v=20260910-ui-10"></script>
   <script src="salt-workshop.js?v=20260910-ui-10"></script>
   <script src="liquid-labs.js?v=20260910-lab-9"></script>
-  <script src="room.js?v=20260911-story-14"></script>
+  <script src="room-scene.js?v=20260916-search-1"></script>
+  <script src="room.js?v=20260916-search-1"></script>
   <script src="clue-book.js?v=20260911-story-14"></script>
   <script src="choice-dialogue.js?v=20260910-cartoon-11"></script>
   <script src="foley.js?v=20260911-story-14"></script>
@@ -126,7 +146,11 @@
   <script src="learning-record.js?v=20260916-2"></script>
   <script src="evidence-task.js?v=20260916-2"></script>
   <script src="playground-view.js?v=20260916-1"></script>
-  <script src="chapter2.js?v=20260915-6"></script>
-  <script src="app.js?v=20260915-playground-6"></script>
+  <link rel="stylesheet" href="hana-search.css?v=20260916-search-1">
+  <script src="hana-search.js?v=20260916-search-1"></script>
+  <script src="hana-search-view.js?v=20260916-search-1"></script>
+  <script src="chapter2.js?v=20260916-search-1"></script>
+  <script src="app.js?v=20260916-search-1"></script>
+  <link rel="stylesheet" href="title-screen.css?v=20260917">
 </body>
 </html>

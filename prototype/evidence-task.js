@@ -3,7 +3,7 @@
  const normalize=v=>String(v||'').normalize('NFKC').replace(/\s/g,'');
  const photos=[{id:'a',name:'A · 출발 준비',flag:'동',ground:'마른 바닥',time:'10:00',wind:'서'},{id:'b',name:'B · 바통을 받는 손',flag:'남',ground:'마른 바닥',time:'10:20',wind:'북'},{id:'c',name:'C · 비어 있는 결승선',flag:'남',ground:'빗방울 자국',time:'10:40',wind:'북'}];
  function check(answers){const errors=[];for(const p of photos){const a=answers?.[p.id]||{};if(normalize(a.wind).replace(/풍$/,'')!==p.wind)errors.push({id:p.id,kind:'wind'});if(normalize(a.time)!==p.time)errors.push({id:p.id,kind:'time'});}return {ok:errors.length===0,errors};}
- function initial(saved){const s=saved&&typeof saved==='object'?saved:{};const answers={};for(const p of photos)answers[p.id]={time:String(s.answers?.[p.id]?.time||'').slice(0,10),wind:String(s.answers?.[p.id]?.wind||'').slice(0,10)};const explanation=String(s.explanation||'').slice(0,1500);const fogExplanation=String(s.fogExplanation||'').slice(0,1000),safetyPlan=String(s.safetyPlan||'').slice(0,1000);return {answers,explanation,fogExplanation,safetyPlan,attempts:Number.isInteger(s.attempts)?Math.max(0,s.attempts):0,firstIndependent:s.firstIndependent===true,reviewed:s.reviewed===true,complete:!!s.complete&&check(answers).ok&&!!explanation.trim()&&!!fogExplanation.trim()&&!!safetyPlan.trim()&&s.reviewed===true};}
+ function initial(saved){const s=saved&&typeof saved==='object'?saved:{};const answers={};for(const p of photos)answers[p.id]={time:String(s.answers?.[p.id]?.time||'').slice(0,10),wind:String(s.answers?.[p.id]?.wind||'').slice(0,10)};const explanation=String(s.explanation||'').slice(0,1500);const fogExplanation=String(s.fogExplanation||'').slice(0,1000),safetyPlan=String(s.safetyPlan||'').slice(0,1000);return {answers,explanation,fogExplanation,safetyPlan,attempts:Number.isInteger(s.attempts)?Math.max(0,s.attempts):0,firstIndependent:s.firstIndependent===true,reviewed:s.reviewed===true,complete:!!s.complete&&check(answers).ok&&(!!explanation.trim()||(s.record?.mode==='oral'&&s.record.spoken===true))&&s.reviewed===true};}
  const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function mount(host,onDone,saved,onSave,onSound){
   let state=initial(saved),feedback='',disposed=false;
@@ -28,21 +28,27 @@
    if(note)note.textContent='세 장은 위 세 시각에 한 장씩 찍었다. 깃발 방향은 촬영자가 따로 그려 두었다. 행동과 바닥은 삽화를 확대해 살펴보자.';
    const form=host.querySelector('.evidence-explain');
    if(form){
+    form.querySelector('h4').textContent='소미: B와 C가 같은 시각일 수 없는 이유 한 가지만 설명해 줘.';
+    form.querySelector('[name="explanation"]').closest('label').firstChild.textContent='깃발과 바닥을 일지에 맞춰 본 뒤, B가 하나의 바통 전달 사진인 이유를 짧게 쓰거나 말해 줘.';
+    const extension=document.createElement('details');extension.className='teacher-extension';
+    extension.innerHTML='<summary>교사용 선택 활동 · 물방울 관찰과 다음 촬영 계획</summary><p>이 활동은 이야기 완료 조건이 아닙니다.</p>';
+    for(const name of ['fogExplanation','safetyPlan']){const field=form.querySelector(`[name="${name}"]`);field.required=false;extension.append(field.closest('label'));}
+    form.insertBefore(extension,form.querySelector('button[type="submit"]'));
     form.insertAdjacentHTML('afterbegin',`<fieldset class="response-mode"><legend>설명을 남기는 방법</legend><button type="button" data-response-mode="written" aria-pressed="${record.mode==='written'}">글로 남기기</button><button type="button" data-response-mode="oral" aria-pressed="${record.mode==='oral'}">모둠에서 말로 설명하기</button></fieldset>`);
     form.querySelector('legend').textContent='설명을 남기는 방법';
     if(record.mode==='oral'){
      form.querySelectorAll('textarea').forEach(el=>{el.required=false;el.rows=2;el.placeholder='선택: 친구나 선생님이 핵심만 기록해도 돼요.';});
-     form.insertAdjacentHTML('beforeend',`<label><input type="checkbox" name="spoken" ${record.spoken?'checked':''} required>위 세 상황을 친구나 선생님에게 말로 설명했어요.</label><p>녹음하지 않습니다. 말로 제출해도 성취 확인은 선생님이 따로 합니다.</p>`);
+     form.insertAdjacentHTML('beforeend',`<label><input type="checkbox" name="spoken" ${record.spoken?'checked':''} required>B와 C를 나눈 핵심 이유를 친구나 선생님에게 말로 설명했어요.</label><p>녹음하지 않습니다. 말로 제출해도 성취 확인은 선생님이 따로 합니다.</p>`);
     }
    }
    const work=host.querySelector('.evidence-work');
    work.insertAdjacentHTML('beforeend',`<details class="teacher-record"><summary>교사용 · 설명 확인 / 시범 플레이 기록</summary><p>게임 완료와 성취 확인은 별개입니다. 학생 이름 없이 이 기기의 진행 기록에 보관됩니다. 체험 모드는 창을 나가기 전에 내려받으세요.</p>${Object.entries(LearningRecord.criteria).map(([key,label])=>`<label>${label}<select data-rating="${key}">${['미확인','확인','다시 설명'].map(v=>`<option ${record.ratings[key]===v?'selected':''}>${v}</option>`).join('')}</select></label>`).join('')}<label>관찰 메모<textarea data-teacher-notes rows="3" maxlength="3000" placeholder="무힌트로 막힌 곳 / 수정 이유 / 다른 시각을 배제한 설명 / 읽기 부담 / 실제 완료 시간">${escape(record.notes)}</textarea></label><button type="button" data-export-record>학습 기록 내려받기</button><p>대조 ${state.attempts}회 · 이 화면 체류 약 ${Math.round((elapsed+Date.now()-started)/60000)}분(읽기 포함, 성취 점수 아님)</p></details>`);
   }
   const baseRender=render;
-  render=function(){baseRender();enhance();};
+  render=function(){baseRender();host.innerHTML=host.innerHTML.replaceAll('은호에게','친구에게').replaceAll('은호:', '태오:');enhance();};
   function capture(form){const d=new FormData(form);for(const p of photos)state.answers[p.id]={wind:String(d.get(p.id+'-wind')||''),time:String(d.get(p.id+'-time')||'')};state.complete=false;state.reviewed=false;}
   function submit(e){if(disposed)return;e.preventDefault();if(e.target.matches('.evidence-form')){capture(e.target);const result=check(state.answers);state.attempts++;if(state.attempts===1)state.firstIndependent=result.ok;feedback=result.ok?'소미: 세 봉투가 서로 모순 없이 이어졌어. 이제 왜 그렇게 판단했는지 은호에게 설명해 줘.':result.errors.some(x=>x.kind==='wind')?'은호: 깃발 끝이 향한 쪽을 바람이 온 쪽이라고 쓴 건 아닐까? 양쪽 관계를 다시 그려 보자.':'소미: 깃발 방향만으로는 B와 C를 나눌 수 없어. 바닥의 변화까지 관측 일지와 맞춰 보자.';}
-   else if(e.target.matches('.evidence-explain')){const d=new FormData(e.target);state.explanation=String(d.get('explanation')||'').trim();state.fogExplanation=String(d.get('fogExplanation')||'').trim();state.safetyPlan=String(d.get('safetyPlan')||'').trim();state.reviewed=d.get('reviewed')==='on';record.spoken=d.get('spoken')==='on';state.complete=check(state.answers).ok&&LearningRecord.ready({...state,...record})&&state.reviewed;}
+   else if(e.target.matches('.evidence-explain')){const d=new FormData(e.target);state.explanation=String(d.get('explanation')||'').trim();state.fogExplanation=String(d.get('fogExplanation')||'').trim();state.safetyPlan=String(d.get('safetyPlan')||'').trim();state.reviewed=d.get('reviewed')==='on';record.spoken=d.get('spoken')==='on';state.complete=check(state.answers).ok&&(record.mode==='oral'?record.spoken:!!state.explanation)&&state.reviewed;}
    if(e.target.matches('.evidence-form')){history.push({attempt:state.attempts,answers:JSON.parse(JSON.stringify(state.answers)),errors:check(state.answers).errors});state.history=history.slice(-50);}
    state.elapsed=elapsed+Date.now()-started;
    if(onSound)onSound('paper');save();render();

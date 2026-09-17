@@ -1,10 +1,15 @@
 const assert=require('node:assert/strict');
 const C=require('./chapter2');
+const fs=require('node:fs');
+const html=fs.readFileSync(__dirname+'/index.html','utf8');
+const previewEntry=html.match(/<option value="([^"]+)">바람과 순서표<\/option>/)?.[1];
 const s=C.build();
+assert.equal(s[previewEntry]?.prepare,true,'wind preview must enter teacher permission and tool preparation');
 for(const id of ['c2-fog','c2-wind','c2-locker','c2-schedule','c2-photo']) {
  assert.equal(s[id]?.experiment,'playground',id+' must use physical exploration');
 }
-assert.equal(s['c2-erased'].next,'c2-locker-intro');
+assert.equal(s['c2-erased'].next,'c2-conflict-hana');
+assert.equal(s['c2-conflict-hana'].next,'c2-locker-intro','Hana answers the memory conflict before investigating');
 assert.equal(s['c2-night'].next,'c2-photo','film must be developed before inspection');
 assert.equal(s['c2-photo'].next,'c2-proof');
 assert.equal(s['c2-proof'].next,'c2-theft');

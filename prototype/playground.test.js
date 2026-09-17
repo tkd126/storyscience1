@@ -25,7 +25,7 @@ function inspectAll(state, ids) {
   assert.notEqual(second, first);
   assert.deepEqual(first.dials, ['north', 'north', 'north']);
   assert.equal(first.speaker, '소미');
-  assert.equal(first.version, 1);
+  assert.equal(first.version, 2);
   assert.throws(() => P.initial('quiz'), /mode/i);
 })();
 
@@ -49,9 +49,10 @@ function inspectAll(state, ids) {
 
 (function windRequiresOpeningTheStoreAndKeepsProgressOnMistakes() {
   let state = P.initial('wind');
-  assert.deepEqual(state.inventory, ['key']);
+  assert.deepEqual(state.inventory, []);
   state = act(state, 'take', 'clip');
-  assert.deepEqual(state.inventory, ['key'], 'closed store must not yield tools');
+  assert.deepEqual(state.inventory, [], 'closed store must not yield tools');
+  state = act(state, 'teacher-permission');
   state = act(state, 'select', 'key');
   state = act(state, 'use', 'store');
   assert.equal(state.storeOpen, true);
@@ -60,12 +61,16 @@ function inspectAll(state, ids) {
   }
   assert.equal(state.inventory.filter((item) => item === 'clip').length, 1);
   assert.equal(P.ready(state), true);
+  state = act(state, 'select', 'clip');
+  state = act(state, 'use', 'board');
+  state = act(state, 'gust');
+  state = act(state, 'inspect', 'flag');
   state = act(state, 'direction', 'east');
   assert.equal(state.windStep, 1);
   state = act(state, 'direction', 'west');
   assert.equal(state.windStep, 1, 'wrong direction must preserve progress');
-  state = act(state, 'direction', 'north');
-  state = act(state, 'direction', 'east');
+  state = act(state, 'inspect', 'flag');state = act(state, 'direction', 'north');
+  state = act(state, 'inspect', 'flag');state = act(state, 'direction', 'east');
   state = act(state, 'select', 'clip');
   state = act(state, 'use', 'board');
   assert.equal(state.complete, false, 'paper must be recovered before fixing');
@@ -118,12 +123,12 @@ function inspectAll(state, ids) {
 
 (function packingNeedsEvidenceSafetyAndACleanBox() {
   let state = P.initial('pack');
-  assert.deepEqual(state.inventory, ['cloth', 'box']);
+  assert.deepEqual(state.inventory, ['cloth', 'box', 'notes', 'tape']);
   state = act(state, 'plan', 'inside');
-  assert.equal(state.safe, false, 'a plan cannot be made before inspecting evidence');
+  assert.equal(state.safe, true, 'the teacher already stopped the event before packing');
   state = inspectAll(state, ['morning', 'forecast', 'ground']);
   state = act(state, 'plan', 'outside');
-  assert.equal(state.safe, false);
+  assert.equal(state.safe, true, 'an unsafe suggestion cannot undo the teacher decision');
   state = act(state, 'plan', 'inside');
   assert.equal(P.ready(state), true);
   state = act(state, 'pack', 'notes');
