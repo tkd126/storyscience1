@@ -159,6 +159,49 @@
   s['c2-schedule-after'].line='잘 챙겼구나. 이제 강당에서 몸을 녹이자. 바깥 기구는 선생님들이 정리할 테니 나가지 마.';
   s['c2-photo-intro'].line='경기 중 바통 사진과 지금 찍는 단체 사진은 따로야. 강당 앞쪽에 얼굴이 안 가리게 서자. 필름은 선생님이 맡기신대.';
   s['c2-shutter'].line='하나야, 강당 앞줄 가운데로 와. 모두 얼굴 가리지 않게 조금씩 옆으로. 좋아, 찍는다!';
+  // Filming-record investigation replaces the former sports sequence.
+  const revised={
+   'c2-event-plan':'선생님, 학교 소개 영상을 찍을 때 사진도 남기셨죠? 하나와 함께 있었다는 기록을 확인하고 싶어요.',
+   'c2-event':'어제 촬영한 필름과 원고를 확인하자. 오늘은 빠진 학교 소개 부분만 짧게 찍겠다. 날씨가 나빠지면 바로 실내로 옮기자.',
+   'c2-partner':'소개 원고에 우리 이름이 같이 있어. 내가 건네면 하나가 다음 부분을 읽기로 했지. 촬영 전에 기록부터 확인하자.',
+   'c2-partner-eunho':'내가 원고를 건네고 하나가 소개하기. 이렇게 써 두니까 누가 무엇을 했는지 분명하네.',
+   'c2-partner-hana':'내가 읽는 동안 이름도 불러 줘. 내 목소리가 녹음에 남는지 같이 확인하고 싶어.',
+   'c2-partner-hana2':'윤하나, 학교 소개 준비됐나요? …이렇게 부르면 되지? 녹음기도 켜 둘게.',
+   'c2-wind-after':'촬영 메모를 다시 고정했어. 원고를 건네는 은호, 다음 소개를 읽는 윤하나. 둘 다 적혀 있어.',
+   'c2-race-ready':'난 옆에서 촬영 소리를 녹음할게. 선생님은 사진을 찍으신대. 원고와 목소리가 같은 순간인지 확인하자.',
+   'c2-cheer-name':'내 이름 들렸어. 이제 소개를 시작할게.',
+   'c2-cheer-order':'은호가 원고를 건네고 하나가 읽기. 준비됐어. 녹음도 시작했어.',
+   'c2-race':'하나야, 소개 원고 받아. 나는 옆으로 비켜 줄게. 다음은 네가 읽는 부분이야.',
+   'c2-baton-answer':'받았어. 다음은 내가 읽을게. 우리 학교 과학실에서는…',
+   'c2-erased':'내가 혼자 끝까지 읽었나? …아니, 방금 원고를 누군가에게 건넸는데. 왜 다음 목소리가 생각 안 나지?',
+   'c2-conflict-hana':'네가 나한테 원고를 줬어. 아직 내 손에 있잖아. 내가 읽는 것도 바로 옆에서 들었고…',
+   'c2-evidence':'은호가 원고를 건넨 뒤 하나가 다음 부분을 읽었어. 녹음과 사진, 촬영 시각을 함께 확인하자.',
+   'c2-confess':'미래 학교 영상에서 내 자리가 비어 있었어. 방금 은호도 내가 읽은 일을 잊었고. 앞으로도 계속 이럴까 봐 무서워.',
+   'c2-future':'메모와 녹음에는 함께 촬영한 일이 남았어. 저녁에 사진도 보자. 그때까지 나랑 같이 있자.',
+   'c2-photo-intro':'원고를 주고받던 사진과 지금 찍는 단체 사진은 따로야. 필름은 선생님이 맡기신대.',
+   'c2-night':'사진관에 도착했어. 선생님이 현상한 사진을 받으셨어. 원고를 주고받던 순간을 촬영 기록과 맞춰 보자.',
+   'c2-proof':'찾았어. 하나가 원고를 받던 순간이야. 사진은 내가, 이름과 시각을 옮긴 수첩은 네가 갖자.'
+  };
+  for(const [id,text] of Object.entries(revised))s[id].line=text;
+  for(const scene of Object.values(s)){
+   scene.label='2편 · 기록에 남은 목소리';
+   for(const key of ['line'])scene[key]=scene[key].replaceAll('경기','촬영').replaceAll('순서표','촬영 메모').replaceAll('바통','원고').replaceAll('응원','이름 부르기').replaceAll('주자','소개 담당').replaceAll('결승선','촬영 자리').replaceAll('운동회','학교 소개 촬영');
+   for(const choice of scene.choices||[])choice.text=choice.text.replaceAll('순서표','촬영 메모').replaceAll('응원 구호','소개 순서').replaceAll('응원','이름 부르기');
+  }
+  s['chapter2-start'].next='c2-voice-intro';
+  line('c2-voice-intro','태오','하나야! …골대 뒤에서 대답한 것 같아. 그런데 저쪽이 뿌예.','c2-fog-intro',{...yesterday,time:'오전 11:46'});
+  Object.assign(s['c2-fog-intro'],{...yesterday,time:'오전 11:47',speaker:'소미',active:'somi',chars:['taeo','somi'],line:'하나야, 거기 있어? …또 대답했어. 골대 뒤는 잘 안 보이네. 벤치에는 촬영 카메라가 놓여 있어. 방금까지 누가 여기 있었나 봐.'});
+  for(const id of ['c2-fog','c2-fog-after'])Object.assign(s[id],{...yesterday,time:'오전 11:48',chars:['taeo','somi']});
+  s['c2-fog'].line='선생님이 함께 가 주신대. 뛰어가지는 말자. 카메라에 남은 흔적부터 보고, 목소리가 들린 쪽을 확인하자.';
+  s['c2-fog-after'].line='카메라를 닦아도, 맨눈으로 봐도 골대가 흐리네. 공기 중에 떠 있는 작은 물방울, 안개 때문이었어. 풀잎의 물방울은 표면에 붙어 있었고. 선생님과 골대 가까이 가자. 하나야, 우리 가고 있어!';
+  s['c2-fog-after'].next='c2-search';
+  s['c2-event'].next='c2-prepare-intro';
+  s['c2-prepare-intro'].line='선생님이 촬영 장소를 확인하고 창고 열쇠를 주셨어. 메모를 고정할 집게와, 손이 안 닿을 때 쓸 긴 집게를 챙기자.';
+  s['c2-cheer-name'].next='c2-cheer-name2';
+  line('c2-cheer-name2','태오','잘 들려. 이번에는 녹음에도 이름이 남을 거야.','c2-race',{time:'오전 10:20'});
+  s['c2-cheer-order'].next='c2-cheer-order2';
+  line('c2-cheer-order2','소미','원고에 적힌 순서도 맞아. 선생님, 시작해 주세요.','c2-race',{time:'오전 10:20'});
+  for(const scene of Object.values(s))scene.label='2편 · 기록에 남은 목소리';
   return s;
  }
  function restartFlags(flags){return Object.fromEntries(Object.entries(flags).filter(([key])=>key!=='hana-search'&&!key.startsWith('weather-')&&!key.startsWith('playground-')));}

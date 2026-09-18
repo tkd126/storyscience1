@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const source=fs.readFileSync(__dirname+'/playground-view.js','utf8');
+assert.ok(source.includes('showBag:false'),'후반 탐색도 가방 UI를 렌더하지 않는다');
+assert.ok(!source.includes('pg-hana-nearby'),'발견 전 안개 장면에 하나 그림 없음');
+assert.ok(source.includes('use:cloth:lens'),'렌즈에서 바로 천 사용 가능');
+assert.ok(source.includes('use:tape:recorder'),'녹음기에서 바로 테이프 넣기 가능');
+assert.ok(source.includes('finishTyping'),'후반 대사 타이핑 연결');
+assert.ok(source.includes('pg-action-strip'),'일반 사물 조작은 장면 위 행동 영역');
+console.log('2편 직접 조작 UI 구성 검사 통과');

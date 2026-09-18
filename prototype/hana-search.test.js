@@ -15,7 +15,8 @@ assert.equal(s.heard,true);assert.equal(s.found,false);
 s=drain(H.act(s,'approach'));
 assert.equal(s.found,true);assert.equal(s.remembered,false);
 s=drain(H.act(s,'eunho'));
-assert.equal(s.remembered,false,'대화만으로 이름 종이 사용을 대체하지 않는다');
+assert.equal(s.remembered,true,'은호와 대화하면 별도 보여 주기 없이 기억을 확인한다');
+s.remembered=false;
 s=H.act(s,'select-name');s=H.act(s,'eunho');
 assert.ok(s.talk);assert.equal(s.remembered,false,'이름과 공유 기억 대화를 끝까지 듣는다');
 s=H.initial(JSON.parse(JSON.stringify(s)));
@@ -29,6 +30,15 @@ assert.equal(other.remembered,true,'선택 사물 조사 여부와 무관하게 
 assert.deepEqual(H.initial({selected:'invalid',found:'true'}).selected,'');
 assert.equal(H.initial({remembered:true}).remembered,false,'깨진 저장의 선행 조건 복원');
 const scenes=C.build();
+for(const id of ['weatherBox','bench','school','tree','hedge','fence','bucket','cart','cone','speakerBox','equipmentBox','track']){
+ const before=drain(H.initial());
+ const observed=H.act(before,id);
+ assert.ok(observed.talk,`${id} 조사 대화`);
+ assert.ok(H.talks[observed.talk].length>=2);
+ const after=drain(observed);
+ assert.equal(after.found,false);
+ assert.equal(after.complete,false,'주변 사물은 필수 진행을 건너뛰지 않음');
+}
 let wind=drain(H.initial());
 wind=H.act(wind,'cloth');
 assert.equal(wind.detail,'wind');
@@ -50,7 +60,8 @@ assert.equal(showing.selected,'name','하나에게 보여 준 뒤에도 종이�
 assert.equal(showing.remembered,false);
 showing=drain(H.act(showing,'eunho'));
 assert.equal(showing.remembered,true,'하나에게 먼저 보여 줘도 재선택 없이 진행');
-assert.equal(scenes['chapter2-start'].next,'c2-search');
+assert.equal(scenes['chapter2-start'].next,'c2-voice-intro');
+assert.equal(scenes['c2-fog-after'].next,'c2-search');
 assert.equal(scenes['c2-search'].experiment,'hana-search');
 assert.equal(scenes['c2-search'].next,'c2-teacher');
 assert.ok(!scenes['chapter2-start'].line.includes('하나야!'));

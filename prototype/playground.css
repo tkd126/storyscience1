@@ -21,7 +21,6 @@
 .pg-flag-signal{position:absolute;left:47%;top:7%;padding:4px 8px;background:#fff0cd;color:#344349;border:2px solid #987345;font-size:clamp(10px,1.3vw,19px);pointer-events:none}
 .pg-fixed-paper{position:absolute;left:83%;top:62%;font-size:clamp(12px,2vw,28px);color:#fff1cd;pointer-events:none}
 .pg-flying-paper{position:absolute;color:#fff2ca;font-size:clamp(15px,2vw,28px);text-shadow:1px 2px 2px #1b262c;pointer-events:none}
-.pg-clean-lens{position:absolute;left:12%;top:77%;width:3%;height:4%;border:2px solid #cceaff;border-radius:50%;background:#79aac8;pointer-events:none}
 .pg-open-chest,.pg-box-state{position:absolute;left:35%;top:51%;width:29%;height:20%;background:#37291f;border:5px solid #9b794f;transform:skewX(-5deg);pointer-events:none;display:flex;justify-content:center;align-items:center;gap:10px;color:#ffecc5;font-size:clamp(18px,4vw,50px)}
 .pg-open-chest i{position:absolute;left:-4%;top:-48%;width:107%;height:45%;border:4px solid #624b36;background:#a28260;transform:skewX(9deg)}
 .pg-loaded-tape{position:absolute;left:14%;top:62%;color:#dad9c0;background:#293941;font-size:clamp(15px,3vw,40px);pointer-events:none}

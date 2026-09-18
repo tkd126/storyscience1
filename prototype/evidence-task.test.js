@@ -1,5 +1,10 @@
 const assert=require('node:assert/strict');
 const E=require('./evidence-task.js');
+const source=require('node:fs').readFileSync(require.resolve('./evidence-task.js'),'utf8');
+assert.doesNotMatch(source,/바통|결승선|출발 준비|evidence-photo-detail/);
+assert.match(source,/소개 원고 받아/);
+assert.match(source,/삽화 대신/);
+assert.equal(E.photos[1].name,'B · 은호가 하나에게 원고를 건네는 모습');
 const valid={a:{time:'10:00',wind:'서'},b:{time:'10:20',wind:'북'},c:{time:'10:40',wind:'북'}};
 assert.equal(E.check(valid).ok,true);
 assert.equal(E.check({...valid,b:{time:'10:40',wind:'북'}}).ok,false);

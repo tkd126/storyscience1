@@ -1,9 +1,21 @@
 (function(root){
   'use strict';
   const talks={
-    arrival:[['태오','골대 옆에서 기다린다며. 앞쪽에는 아무도 없는데?'],['소미','방송실에서 찾은 촬영 메모에는 분명 여기라고 적혀 있었어. 선생님도 오고 계셔. 조금만 더 살펴보자.']],
+    weatherBox:[['태오','저 하얀 상자는 새집이야? 문에 틈이 잔뜩 있네.'],['소미','백엽상이야. 햇빛과 비를 막고 바람은 통하게 해서 기온을 재는 곳이지. 기구는 건드리지 말자.']],
+    bench:[['태오','앉으려니까 차가워! 여기 오래 기다렸으면 손도 얼었겠다.'],['소미','천 옆에 카메라가 놓여 있어. 누가 잠깐 자리를 비웠나 봐.']],
+    school:[['태오','우리 교실 창문이 저기였지? 여기서 보니까 멀다.'],['소미','창문마다 반사돼서 안은 잘 안 보여. 선생님과 떨어져서 들어가지는 말자.']],
+    tree:[['태오','가지에서 눈이 떨어졌어. 누가 움직인 줄 알았네.'],['소미','바람에 흔들린 거야. 나무 바로 아래는 피해서 걷자.']],
+    hedge:[['태오','화단 안쪽도 볼게…… 발자국은 안 보여.'],['소미','가지에 옷이 걸릴 수 있어. 밖에서 눈으로만 살펴보자.']],
+    fence:[['태오','울타리 너머로 돌아가면 빠르겠는데?'],['소미','넘지 말자. 선생님이 서로 보이는 곳에 있으라고 하셨어.']],
+    bucket:[['태오','양동이에 얇은 얼음이 생겼어. 막대로 깨 볼까?'],['소미','그냥 두자. 남아 있던 물이 얼었나 봐. 바닥도 미끄러울 수 있겠어.']],
+    cart:[['태오','작은 수레네. 바퀴가 눈 속에 반쯤 묻혔어.'],['소미','흙을 나르는 데 썼나 봐. 지금 밀면 길 한가운데 걸릴 테니 그대로 두자.']],
+    cone:[['태오','이 고깔은 누가 세워 놓았지?'],['소미','여기로 가지 말라는 표시일 수도 있어. 옆으로 돌아가자.']],
+    speakerBox:[['태오','저 스피커에서 갑자기 이름을 부르면 깜짝 놀라겠다.'],['소미','지금은 조용해. 바람 소리랑 사람 목소리를 잘 들어 보자.']],
+    equipmentBox:[['태오','장비 상자 잠금쇠가 잠겨 있어. 안에서 달그락거리네.'],['소미','선생님 물건일 거야. 흔들지 말고 필요하면 허락을 받자.']],
+    track:[['태오','운동장 선이 눈 밑에서 끊겨 보인다.'],['소미','선이 없어진 건 아니고 눈에 가린 거겠지. 사람도 앞에서 안 보인다고 없는 건 아닐 거야.']],
+    arrival:[['태오','가까이 왔는데 골대 앞쪽에는 아무도 없네. 대답은 뒤에서 들렸지?'],['소미','응. 방송실에서 찾은 메모에도 골대 옆이라고 적혀 있었어. 선생님과 함께 뒤쪽을 확인하자. 하나야, 우리 왔어!']],
     sound:[['태오','하나야! 여기 있어?'],['윤하나','……은호도 왔어?'],['소미','골대 뒤에서 들렸어. 돌아가 보자.']],
-    found:[['강은호','여기 있었구나. 그런데…… 미안, 우리가 아는 사이야?'],['윤하나','아까도 그렇게 물었어. 그래서 다시 부르기가 무서웠어.'],['소미','은호야, 아까 네가 잊지 않으려고 적어 둔 이름이 있어. 우리 가방에 넣었잖아.']],
+    found:[['강은호','여기 있었구나. 그런데…… 미안, 우리가 아는 사이야?'],['윤하나','아까도 그렇게 물었어. 그래서 다시 부르기가 무서웠어.'],['소미','은호야, 아까 네가 잊지 않으려고 적어 둔 이름이 있어. 내가 꺼내 줄게. 같이 읽어 보자.']],
     uncertain:[['강은호','목소리는 낯설지 않은데…… 이름이 생각 안 나.'],['윤하나','억지로 아는 척 안 해도 돼. 그래도, 그냥 가지는 말아 줘.']],
     hana:[['윤하나','카메라를 챙겨서 교실로 가려다가…… 은호가 날 못 알아봐서 여기 앉아 있었어.'],['소미','우린 네 이름을 찾아서 온 거야. 은호도 다시 떠올릴 수 있는지 같이 해 보자.']],
     hanaNote:[['윤하나','내가 카메라 끈에 끼워 둔 쪽지야. 기다리다가 벤치에 두고 왔어. 챙겨 줘서 고마워.'],['소미','카메라는 선생님과 같이 가져가자. 쪽지는 우리가 보관하고 있을게.']],
@@ -28,7 +40,7 @@
     s.beat=s.talk&&Number.isInteger(saved.beat)?Math.max(0,Math.min(saved.beat,talks[s.talk].length-1)):0;
     s.detail=saved.detail==='camera'?'camera':'';
     // Rebuild visible speech from authored content, never arbitrary save text.
-    s.message=s.remembered?'선생님이 우리 쪽으로 오셨어. 하나와 같이 가자.':s.found?'이름을 적은 종이가 가방에 있어.':s.heard?'골대 뒤쪽에서 목소리가 들렸어.': '약속한 골대 옆을 조금 더 살펴보자.';
+    s.message=s.remembered?'선생님이 우리 쪽으로 오셨어. 하나와 같이 가자.':s.found?'은호를 눌러 말을 걸어 보자. 이름을 함께 읽으면 기억이 날지도 몰라.':s.heard?'골대 뒤쪽에서 목소리가 들렸어.': '약속한 골대 옆을 조금 더 살펴보자.';
     return s;
   }
   function act(state,action){
@@ -40,7 +52,7 @@
         if(done==='sound')s.heard=true;
         if(done==='memory')s.remembered=true;
         if(done==='teacher')s.escorted=true;
-        s.speaker='소미';s.message=s.escorted?'하나도 일어났어. 함께 교무실로 가자.':s.remembered?'선생님이 우리 쪽으로 오셨어. 하나와 같이 가자.':s.found?'이름을 적은 종이가 가방에 있어.':s.heard?'골대 뒤쪽에서 목소리가 들렸어.':'방송실에서 찾은 촬영 약속은 골대 옆이었어.';
+        s.speaker='소미';s.message=s.escorted?'하나도 일어났어. 함께 교무실로 가자.':s.remembered?'선생님이 우리 쪽으로 오셨어. 하나와 같이 가자.':s.found?'은호를 눌러 말을 걸어 보자. 이름을 함께 읽으면 기억이 날지도 몰라.':s.heard?'골대 뒤쪽에서 목소리가 들렸어.':'방송실에서 찾은 촬영 약속은 골대 옆이었어.';
       }return s;
     }
     if(s.talk)return s;
@@ -58,8 +70,8 @@
     if(action==='finish'){if(s.escorted)s.complete=true;return s;}
     if(action==='eunho'&&s.found){
       if(s.selected==='name'){s.selected='';return talk('memory');}
-      if(s.selected==='note'){s.selected='';s.speaker='강은호';s.message='이 촬영 메모는 봤어. 그런데 이름이…… 아까 따로 적은 종이도 있지?';return s;}
-      return talk(s.remembered?'memory':'uncertain');
+      s.selected='';
+      return talk('memory');
     }
     if(action==='hana'&&s.found){const id=s.selected==='name'?'hanaName':s.selected==='note'?'hanaNote':'hana';if(s.selected!=='name')s.selected='';return talk(id);}
     if(s.selected==='note'&&!s.found&&['goal','shed','shelter'].includes(action)){
@@ -67,11 +79,11 @@
       s.speaker='소미';s.message=action==='shed'?'쪽지에는 골대 옆이라고 적혀 있어. 창고는 골대에서 멀고, 문도 잠겨 있네. 다른 곳과 비교해 보자.':'지붕은 있지만 골대 옆은 아니야. 쪽지의 약속 장소와 맞는 곳을 그림에서 골라 보자.';return s;
     }
     if(s.selected&&['goal','camera','ball','shed','flag','approach'].includes(action))return talk('wrong');
-    if(action==='camera'){s.detail='camera';return s;}
+    if(action==='camera'){s.note=true;s.detail='camera';return s;}
     if(action==='goal')return talk(s.found?'uncertain':'sound');
     if(action==='approach'&&s.heard){s.found=true;return talk('found');}
     if(action==='teacher')return talk(s.remembered?'teacher':'earlyTeacher');
-    if(['ball','shed','flag','radio','shelter'].includes(action))return talk(action);
+    if(['ball','shed','flag','radio','shelter','weatherBox','bench','school','tree','hedge','fence','bucket','cart','cone','speakerBox','equipmentBox','track'].includes(action))return talk(action);
     return s;
   }
   function speech(s){

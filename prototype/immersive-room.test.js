@@ -7,6 +7,7 @@ assert.ok(view.includes("e.key==='Enter'"),'keyboard can advance');
 const css=read('immersive-room.css');
 assert.match(css,/\.room-panel \.room-stage\s*\{[^}]*inset:0!important/s);
 // CSS smoke check only; rendered coverage and aspect ratio are checked in-browser.
-assert.match(css,/\.room-panel \.room-picture\s*\{[^}]*width:max\(100cqw,/s);
+assert.match(css,/\.room-panel \.room-picture\s*\{[^}]*width:100%;height:100%/s);
+assert.doesNotMatch(css,/\.room-panel \.room-stage\s*\{[^}]*overflow:auto/s,'배경 스크롤 금지');
 assert.ok(read('index.html').includes('immersive-room.css'));
 console.log('Immersive room layout and dialogue input regression passed');

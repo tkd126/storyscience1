@@ -1,5 +1,8 @@
 const assert = require('node:assert/strict');
 const P = require('./playground.js');
+const source = require('node:fs').readFileSync(require.resolve('./playground.js'), 'utf8');
+assert.doesNotMatch(source, /바통|경기 전|4번, 출발|체육대회/);
+assert.match(source, /소개 원고 받아/);
 
 function act(state, type, value) {
   return P.act(state, { type, value });
