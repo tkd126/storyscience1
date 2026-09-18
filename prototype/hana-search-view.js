@@ -1,6 +1,9 @@
 (function(root){
   'use strict';
   const spots=[
+    ['cloth','벤치의 천',15,80,7,8,'M15 81 Q18 80 21 82 L21 88 L17 87 Z'],
+    ['radio','방송 장비',80,59,10,8,'M80 65 L82 60 L88 61 L90 66 Z'],
+    ['shelter','본부석 의자',82,73,10,14,'M82 74 Q87 72 90 76 L92 86 L84 87 Z'],
     ['camera','벤치 위 카메라',11.5,76,5.5,6.3,'M11.8 78 L12.5 77.5 V76.7 H14.4 L14.8 76.3 H15.7 L16.6 77.5 V81 L13.3 82.2 L11.8 81.6 Z'],
     ['goal','골대 옆',63,36.5,12,9.5,'M63.2 45.5 L64 38 L64.8 37.1 L74.6 37.6 V45.4 M64.8 37.1 V46 L74.6 45.4 M64.8 46 L63.2 45.5'],
     ['ball','축구공',70.5,49.5,2.2,4.1,'M72.4 51.6 C72.4 53.5 70.7 53.5 70.7 51.6 C70.7 49.7 72.4 49.7 72.4 51.6 Z'],
@@ -34,11 +37,23 @@
       const picture=host.querySelector('.room-picture');
       if(s.found&&!wide){
         picture.insertAdjacentHTML('beforeend',`<div class="hana-meeting"><button type="button" class="hana-person hana-eunho" data-room-action="eunho" aria-label="은호에게 말하거나 물건 보여 주기"><img src="assets/characters/eunho/${s.remembered?'happy':'worried'}.png" alt="하나와 마주 선 은호"><span>강은호</span></button><button type="button" class="hana-person hana-girl" data-room-action="hana" aria-label="하나에게 말하거나 물건 보여 주기"><img src="assets/hana-first-meeting-v1.png" alt="겨울 외투를 입고 캠코더를 든 윤하나"><span>윤하나</span></button></div>`);
+        if(s.selected&&!s.talk){
+          for(const [action,name] of [['eunho','은호'],['hana','하나']]){
+            const person=picture.querySelector(`[data-room-action="${action}"]`);
+            person.classList.add('ready-to-show');
+            person.setAttribute('aria-label',`${name}에게 보여 주기`);
+            person.querySelector('span').textContent=`${name}에게 보여 주기`;
+          }
+        }
         if(!s.talk)host.querySelector('.room-toolbar').insertAdjacentHTML('beforeend',button('field','주변 다시 살피기'));
       }
       if(s.heard&&!s.found&&!s.talk)picture.insertAdjacentHTML('beforeend',`<div class="hana-goal-link">${button('approach','골대 뒤로 돌아가기 →')}</div>`);
       if(!s.talk)picture.insertAdjacentHTML('beforeend',`<div class="hana-teacher-link">${button(s.escorted?'finish':'teacher',s.escorted?'함께 교무실로 →':'선생님께 말하기')}</div>`);
       if(s.selected)host.querySelector('.room-bag').insertAdjacentHTML('beforeend',button('stow','다시 넣기'));
+      if(s.detail==='wind'){
+        picture.insertAdjacentHTML('beforeend',`<div class="hana-wind-choice" style="position:absolute;left:35%;top:55%;display:flex;gap:20px">${button('wind-left','← 이쪽으로 날릴 것 같아')}${button('wind-right','이쪽으로 날릴 것 같아 →')}</div>`);
+        host.querySelector('.room-bag').insertAdjacentHTML('beforeend',button('close','천 내려놓기'));
+      }
       if(s.talk){
         host.querySelector('.room-speech').insertAdjacentHTML('beforeend',button('next','계속 ▼'));
         host.querySelector('.room-stage').inert=true;
@@ -51,9 +66,15 @@
       else if(s.talk)host.querySelector('[data-room-action="next"]').focus({preventScroll:true});
       else if(lastAction){const nextAction=lastAction==='take-note'?'camera':lastAction.startsWith('select-')?(s.found?'eunho':'bag'):lastAction==='next'?(s.found?'eunho':s.heard?'approach':'bag'):lastAction;host.querySelector(`[data-room-action="${nextAction}"]`)?.focus({preventScroll:true});}
     }
-    function click(e){const b=e.target.closest('[data-room-action]');if(b&&host.contains(b))dispatch(b.dataset.roomAction);}
+    function click(e){
+      const b=e.target.closest('[data-room-action]');
+      if(b&&host.contains(b)){dispatch(b.dataset.roomAction);return;}
+      // Inert scenery retargets clicks to the panel while dialogue is playing.
+      if(s.talk&&!host.querySelector('.room-modal')&&!e.target.closest('button,input,select,textarea,a'))dispatch('next');
+    }
     function keydown(e){
       const modal=host.querySelector('.room-modal');
+      if(!modal&&s.talk&&(e.key==='Enter'||e.key===' ')&&!e.target.closest('button')){e.preventDefault();dispatch('next');}
       if(e.key==='Escape'&&modal){e.preventDefault();dispatch(bag?'bag-close':'close');}
       if(e.key==='Tab'&&modal){const nodes=[...modal.querySelectorAll('button')];const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
     }

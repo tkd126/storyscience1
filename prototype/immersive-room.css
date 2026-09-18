@@ -1,0 +1,26 @@
+/* The artwork and its percentage hit regions occupy the same full viewport.
+   UI floats above them; no second, letterboxed room inside the background. */
+.experiment-panel.room-panel{inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;border:0!important;border-radius:0!important;padding:0!important}
+.room-panel .room-stage{inset:0!important;display:block;background:transparent;overflow:auto;container-type:size}
+.room-panel .room-picture{position:absolute;inset:0 auto auto 0;width:max(100cqw,177.6833cqh);height:max(100cqh,56.2799cqw);aspect-ratio:1672/941;max-width:none}
+.room-panel .room-picture>img:first-child{width:100%;height:100%;max-height:none;object-fit:fill;border-radius:0}
+.stage:has(.room-panel:not(.hidden)) .hud{z-index:25;pointer-events:none}
+.stage:has(.room-panel:not(.hidden)) .hud button{pointer-events:auto}
+.room-panel .room-toolbar{position:absolute;top:65px;left:16px;right:auto;width:min(390px,calc(100% - 32px));border:0;border-radius:16px;padding:8px 12px;background:#142a32d9}
+.room-panel .room-toolbar button{white-space:nowrap;flex-shrink:0}
+.room-panel .room-bag{bottom:102px!important;left:auto;right:16px;max-width:calc(100% - 32px);min-height:0!important;padding:7px 10px;border-radius:14px;background:#142a32e8}
+.room-panel .room-speech{left:16px;right:16px;bottom:12px;height:82px!important;padding:10px 105px 10px 16px!important;border:2px solid #94774e;border-radius:20px;background:#fff4dfef;color:#344349;box-shadow:0 4px 0 #392b2566}
+.room-panel .room-speech>b{color:#76562d}
+.room-panel .room-speech p{font-size:clamp(15px,1.8vh,22px);line-height:1.4;margin:5px 0}
+.hana-search-panel .room-speech:has(button){cursor:pointer;user-select:none}
+.room-panel .hana-teacher-link{bottom:22%}
+.room-panel .hana-meeting{bottom:18%;top:12%}
+.room-panel .pg-teacher{bottom:20%}
+.room-panel .room-modal{inset:60px 0 100px!important}
+@media(max-width:650px){
+ .room-panel .room-stage{overflow:auto}
+ .room-panel .room-toolbar{top:90px;left:8px;right:8px}
+ .room-panel .room-speech{left:8px;right:8px;height:120px!important;padding:10px 15px 40px!important}
+ .room-panel .room-bag{bottom:140px!important;left:8px;font-size:12px}
+ .room-panel .room-modal{inset:90px 0 145px!important}
+}

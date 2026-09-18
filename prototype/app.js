@@ -475,6 +475,11 @@ function bindEvents() {
   dom.btnStart.addEventListener("click", startNew);
   dom.btnContinue.addEventListener("click", continueGame);
   dom.dialogue.addEventListener("click", advance);
+  $('#stage').addEventListener('click', event => {
+    if(dom.story.classList.contains('hidden')||dom.dialogue.classList.contains('hidden'))return;
+    if(event.target.closest('button,input,select,textarea,a,.hud,.experiment-panel,#logPanel,dialog'))return;
+    advance();
+  });
   $("#btnLog").addEventListener("click", openLog);
   $("#btnCloseLog").addEventListener("click", () => dom.logPanel.classList.add("hidden"));
   $("#btnSound").addEventListener("click", toggleSound);
