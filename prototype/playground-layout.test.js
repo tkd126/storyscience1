@@ -22,7 +22,7 @@ for(const mode of ['fog','wind','locker','pack','photo']){
  assert.match(panel.html,/data-room-action="bag"/);
  assert.doesNotMatch(panel.html,/pg-controls|pg-inventory/,'no permanent action/inventory list');
  assert.equal(progress.clock.unlimited,true,'time challenge is opt-in');
- if(mode==='photo')assert.match(panel.html,/assets\/photo-studio-cartoon-v1.png/);
+ if(mode==='photo')assert.match(panel.html,/assets\/photo-studio-cartoon-v2.png/);
  cleanup();
 }
 const panel=host();let progress;

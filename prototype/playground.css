@@ -1,7 +1,7 @@
 /* Chapter-two exploration uses the same stage, bag and speech layout as chapter one. */
-.background.past.c2-photoStudio{background-image:url('assets/photo-studio-cartoon-v1.png');filter:none}
-.background.past.c2-staffroom{background-image:url('assets/staffroom-cartoon-v1.png');filter:none}
-.background.past.c2-hall{background-image:url('assets/hall-cartoon-v1.png');filter:none}
+.background.past.c2-photoStudio{background-image:url('assets/photo-studio-cartoon-v2.png');filter:none}
+.background.past.c2-staffroom{background-image:url('assets/staffroom-cartoon-v2.png');filter:none}
+.background.past.c2-hall{background-image:url('assets/hall-cartoon-v2.png');filter:none}
 .playground-panel .room-stage{bottom:190px}
 .playground-panel .room-bag{bottom:140px;min-height:50px;white-space:normal}
 .playground-panel .room-speech{height:140px;background:#fff3df;color:#344349;padding-right:24px;overflow:auto}

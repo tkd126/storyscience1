@@ -35,7 +35,7 @@
    return '<button type="button" class="room-hotspot '+(peek?'revealed':'')+'" data-pg="spot:'+id+'" aria-label="'+labels[id]+' 조사" style="left:'+x+'%;top:'+y+'%;width:'+w+'%;height:'+h+'%"><svg class="room-object-glow" viewBox="'+[x,y,w,h].join(' ')+'" preserveAspectRatio="none" aria-hidden="true"><path d="'+path+'"/></svg><span>'+labels[id]+'</span></button>';
   }
   function modal(title,body,wide=false){return '<section class="room-modal pg-modal '+(wide?'pg-wide':'')+'" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><div class="room-modal-content">'+button('close','닫기 · 장면으로')+'<h2>'+esc(title)+'</h2>'+body+'</div></section>';}
-  function art(){if(mode==='photo')return 'assets/photo-studio-cartoon-v1.png';if(['locker','pack'].includes(mode))return 'assets/playground-desk-cartoon-v3.png';return 'assets/playground-field'+(mode==='wind'&&game.storeOpen?'-open':'')+'-cartoon-v3.png';}
+  function art(){if(mode==='photo')return 'assets/photo-studio-cartoon-v2.png';if(['locker','pack'].includes(mode))return 'assets/playground-desk-cartoon-v3.png';return 'assets/playground-field'+(mode==='wind'&&game.storeOpen?'-open':'')+'-cartoon-v3.png';}
   function render(focus=false){
    if(disposeEvidence){disposeEvidence();disposeEvidence=null;}
    let spots='';
