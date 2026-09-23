@@ -1,0 +1,26 @@
+const assert=require('node:assert/strict');
+const {R,go,editing}=require('./chapter2-test-helpers.cjs');
+const I=require('./chapter2-investigation'),Lab=require('./chapter2-active');
+const UI=require('./chapter2-interactions');
+const fs=require('node:fs'),path=require('node:path');
+assert.match(fs.readFileSync(path.join(__dirname,'chapter2-v3.css'),'utf8'),/button:not\(\.v3-photo-mark\)\[aria-pressed=true\]/,'사진 근거를 불투명한 선택 색으로 덮지 않는다');
+assert.ok(!require('node:fs').readFileSync(require('node:path').join(__dirname,'app.js'),'utf8').includes('잘못 붙은 표찰'),'결말에도 어려운 표찰 표현을 남기지 않는다');
+for(const key of ['coalescence','ice']){assert.match(UI.render(key,x=>x),/<img/);assert.ok(!UI.render(key,x=>x).includes('data-clue-answer="병합설"'));}
+let s=go(R.preview('coast'),'inspect','day-coast');
+for(const [target,value] of editing.filter(([k])=>k!=='order'))s=go(s,'work-set',target,value);
+assert.equal(s.answers.editing,true,'여섯 답만 맞으면 재생');
+s=go(R.preview('prep'),'inspect','ribbon');s=go(s,'answer','wind-evidence','동풍');assert.ok(!s.answers.wind);
+s=go(s,'answer','wind-evidence',' 서풍 ');assert.ok(s.answers.wind);
+s=R.preview('weather');s.seen.noteOpened=true;s=go(s,'lab-open','mass');
+for(const [target,value] of [['volume','same'],['prediction','cold'],['reason','density']])s=go(s,'lab-set',target,value);
+assert.match(Lab.render(s.lab),/data-lab-value="cold" aria-pressed="true"/);
+s=go(s,'lab-set','measure','yes');assert.ok(s.lab.measured);assert.ok(!s.answers.density);
+s=go(s,'lab-set','prediction','warm');assert.equal(s.lab.prediction,'cold','결과 관찰 중 선택은 고정');
+s=go(s,'lab-finished');assert.ok(s.answers.density);assert.equal(s.lab,null);
+assert.ok(!I.render({question:'editing',work:{editing:{}}},x=>x).includes('data-work-key="order"'));
+let end={...R.preview('coast'),after:'end',dialogue:[],choices:{promise:0}};
+end=R.act(end,{type:'next'});assert.equal(end.after,'teaser-still');assert.ok(!end.complete);
+for(let n=0;n<20&&end.after==='teaser-still';n++)end=R.act(end,{type:'next'});
+assert.equal(end.after,'teaser-moved');assert.ok(!end.complete);
+end=go(end,'next');assert.ok(end.complete);
+console.log('서풍 입력·선택 강조·자동 실험 완료·편집 자동 진행 통과');

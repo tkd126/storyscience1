@@ -1,0 +1,16 @@
+const assert=require('node:assert/strict');
+const {R,go}=require('./chapter2-test-helpers.cjs');
+const I=require('./chapter2-investigation');
+let s=R.preview('prep');s.seen.secured=true;s=go(s,'inspect','tape');
+assert.ok(!I.render(s,x=>x).includes('data-work-key="repair"'),'첫 문제에 두 번째 질문을 노출하지 않는다');
+s=go(s,'work-set','error','1');s=go(s,'work-check');assert.equal(s.question,'manuscript');
+s=go(s,'work-set','error','4');s=R.act(s,{type:'work-check'});
+assert.ok(s.dialogue.length,'두 문제 사이에 이야기 대화가 있다');
+s=go(s,'next');assert.equal(s.question,'manuscript-repair');
+s.question='';s=go(s,'inspect','tape');assert.equal(s.question,'manuscript-repair','나갔다 다시 열어도 두 번째 문제에서 이어진다');
+s=go(s,'work-set','repair','condense');s=go(s,'work-check');assert.ok(s.answers.manuscript);
+let p=R.preview('archive');p.question='photo';p=go(p,'answer','photo','1');assert.ok(!p.answers.photo);
+p=go(p,'answer','photo','2');assert.ok(p.answers.photo,'번호만 선택해도 정답 처리');
+let n=go(R.preview('yard'),'inspect','camera');n=go(n,'inspect','camera');assert.equal(n.notebook.length,1,'수첩 발견 중복 없음');
+assert.deepEqual(R.initial(JSON.parse(JSON.stringify(n))).notebook,n.notebook,'수첩 저장 복원');
+console.log('원고 단계 분리·번호만 사진 선택·수첩 저장 통과');

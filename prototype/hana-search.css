@@ -19,6 +19,8 @@
 .hana-person span{position:absolute;bottom:4%;left:25%;padding:6px 12px;background:#173038;color:#ffedc5;border-radius:12px}
 .hana-person.ready-to-show span{left:50%;transform:translateX(-50%);white-space:nowrap;background:#fff0c9;color:#3c3425;border:2px solid #997448;padding:10px 16px;box-shadow:0 3px 0 #49392366}
 .hana-girl img{transform:scaleX(-1)}
+.hana-mystery img{filter:brightness(.08) saturate(0) opacity(.82) drop-shadow(0 0 8px #6f8ca6)!important}
+.hana-mystery span{background:#152632!important;color:#d8e5ec!important}
 .room-dialogue-portrait{position:absolute;left:8%;bottom:0;width:32%;height:76%;pointer-events:none;z-index:1;overflow:hidden}
 .room-dialogue-portrait img{width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 6px 9px #0005)}
 .hana-search-panel .room-speech{z-index:3}

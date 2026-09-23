@@ -529,6 +529,17 @@ function showStory() {
 }
 
 function renderScene(id) {
+  if(window.Chapter2V3View && (id==='chapter2-start'||id.startsWith('c2-'))){
+    if(disposeExperiment){disposeExperiment();disposeExperiment=null;}
+    if(id==='chapter2-start')delete state.flags['chapter2-v3'];
+    if(previewSession&&id.startsWith('c2-preview-'))state.flags['chapter2-v3']=window.Chapter2V3State.preview(id.slice('c2-preview-'.length));
+    state.scene='c2-v3';saveGame();
+    dom.dialogue.classList.add('hidden');clearChoices();renderCharacters([]);renderProp();
+    dom.sceneLabel.textContent='';dom.date.textContent='1999년 12월 28일';dom.time.textContent='오전 11:50';
+    const panel=$('#experimentPanel');panel.classList.remove('hidden');panel.setAttribute('aria-label','2편 안개 속에서 돌아온 대답');
+    disposeExperiment=window.Chapter2V3View.mount(panel,()=>renderScene('chapter2-end'),state.flags['chapter2-v3'],progress=>{state.flags['chapter2-v3']=progress;saveGame();},playFoley);
+    return;
+  }
   // Older saves inside the abrupt first encounter replay only this encounter;
   // later chapter-two saves and every chapter-one flag remain untouched.
   if(['c2-found','c2-anchor','c2-call','c2-answer'].includes(id))id='c2-search';
@@ -783,13 +794,13 @@ function showEnding(id = "end") {
   const title = window.EpisodeTitle.choose(state.flags, preview);
   dom.endingBadges.innerHTML = `<span class="badge episode-title">에피소드 칭호 · ${title}</span>`;
   if(id==='chapter2-end'){
-    dom.date.textContent='1999년 12월 29일';dom.time.textContent='오후 6:14';
-    dom.background.className='background past c2-photoStudio';
-    $('#endingKicker').textContent='2편 · 운동회에 없는 아이';
-    $('#endingTitle').textContent='사진에 남은 얼굴';
-    $('#endingMessage').textContent='사진과 수첩은 우리 곁에 남았다.';
-    dom.endingSummary.textContent='하나가 네 번째 주자였다는 기록과 얼굴이 남았다. 검은 우비가 원본 필름을 가져갔지만 나눠 보관한 사진과 수첩은 지켰다. 문 안쪽에 떨어진 호루라기는 은호가 쓰던 것과 닮았다. 목도리를 찾으러 간 은호는 아직 돌아오지 않았다.';
-    dom.endingBadges.textContent='두 번째 기억의 흔적 · 얼굴';
+    dom.date.textContent='1999년 12월 28일';dom.time.textContent='낮 12:10';
+    dom.background.className='background past weather-field';
+    $('#endingKicker').textContent='2편 · 안개 속에서 돌아온 대답';
+    $('#endingTitle').textContent='내일, 창가의 빈자리';
+    $('#endingMessage').textContent='찾으러 와 줘서 고마워. 그런데 지금 뒤돌아보지는 마.';
+    dom.endingSummary.textContent='운동장에서 주운 수첩에 없던 글씨가 생기기 시작했다. 어제 사진과 뒷면의 메모를 따라 관측실까지 온 아이들은 촬영 기록을 대조해 하나의 목소리가 남은 영상을 찾았다. 재생을 멈춘 빈 교실 화면에서 의자가 움직였다. 수첩에는 새로운 문장이 남았다. “찾으러 와 줘서 고마워. 그런데 지금 뒤돌아보지는 마.”';
+    dom.endingBadges.textContent='두 번째 단서 · 녹음과 사진에 남은 시간의 어긋남';
     $('#btnChapter1').textContent='2편 다시 살펴보기';
     $('#endingNote').textContent='다음 이야기: 밤의 학교 방송 · 3편은 아직 제작 중';
   }
@@ -802,7 +813,9 @@ function addLog(speaker, text) {
 }
 
 function openLog() {
-  dom.logList.innerHTML = state.log.slice().reverse().map((item) => `<div class="log-entry"><b>${escapeHtml(item.speaker)}</b><br>${escapeHtml(item.text)}</div>`).join("") || "<p>아직 기록이 없습니다.</p>";
+  const chapter2Log=state.flags['chapter2-v3']?.history;
+  const entries=[...state.log,...(Array.isArray(chapter2Log)?chapter2Log:[])].slice(-80);
+  dom.logList.innerHTML = entries.reverse().map((item) => `<div class="log-entry"><b>${escapeHtml(item.speaker)}</b><br>${escapeHtml(item.text)}</div>`).join("") || "<p>아직 기록이 없습니다.</p>";
   dom.logPanel.classList.remove("hidden");
 }
 

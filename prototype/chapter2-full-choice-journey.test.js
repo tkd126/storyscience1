@@ -1,0 +1,21 @@
+const assert=require('node:assert/strict');
+const {R,go,work,wind,manuscript,weather,editing}=require('./chapter2-test-helpers.cjs');
+let s=go(R.initial(),'story-start');
+s=go(s,'inspect','camera');s=go(s,'inspect','weather-record');
+for(const [target,key,value] of [['leaves','dew','이슬'],['fog','fog','안개'],['sky','sky','구름']]){s=go(s,'inspect',target);s=go(s,'answer',key,value);}
+assert.equal(s.room,'prep');assert.ok(!s.seen.doorOpen);
+s=go(s,'inspect','ribbon');s=go(s,'answer','wind-evidence','서풍');
+s=go(s,'inspect','ruler');s=go(s,'select','ruler');s=go(s,'inspect','paper');
+s=go(s,'inspect','clip');s=go(s,'select','clip');s=go(s,'inspect','paper');
+s=go(s,'inspect','tape');s=work(s,manuscript);s=go(s,'select','tape');s=go(s,'inspect','recorder');
+s=go(s,'operate','rewind');assert.ok(!s.seen.doorOpen);
+s=go(s,'operate','play');assert.equal(s.room,'archive');assert.ok(s.seen.doorOpen);
+s=go(s,'inspect','logbook');s=go(s,'inspect','map');s=go(s,'evidence','fog');s=go(s,'evidence','east');s=go(s,'answer','photo','2');
+s=go(s,'inspect','photo-back');s=go(s,'inspect','photo-detail');assert.equal(s.room,'weather');
+s=go(s,'inspect','coded-note');s=go(s,'unfold-note');
+s=go(s,'inspect','air-balance');
+for(const [key,value] of [['volume','same'],['prediction','cold'],['reason','density'],['measure','yes']])s=go(s,'lab-set',key,value);
+s=go(s,'lab-finished');s=go(s,'inspect','high-chart');s=work(s,weather);assert.equal(s.room,'coast');
+s=go(s,'inspect','day-coast');s=work(s,editing);s=go(s,'inspect','last-recording');assert.ok(s.complete);
+assert.deepEqual(Object.keys(s.choices).sort(),['arrival','observe','trapped','voice','archive','investigate','edit','promise'].sort());
+console.log('운동장부터 결말까지 선택 8곳·필수 학습·자동 이동 전체 경로 통과');

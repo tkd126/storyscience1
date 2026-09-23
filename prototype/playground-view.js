@@ -2,8 +2,8 @@
  'use strict';
  const titles={fog:'골대 뒤에서 들린 목소리',wind:'촬영 메모와 운동장',locker:'방송석의 녹음',pack:'처마 아래 기록 보관',photo:'사진관의 세 기록'};
  const descriptions={grass:'풀잎 표면에 물방울이 있어. 모습만으로 이슬인지 비인지 확정할 수는 없어. 선생님 기록에는 밤에 비가 안 왔고 아침부터 물방울이 있었다고 적혀 있어.',air:'가까운 카메라는 또렷한데 먼 골대는 흐려. 먼 골대 앞 공기 속 물방울이 시야를 가리는 거야.',sky:'구름은 운동장보다 높은 하늘에 있어. 물방울이 모인 위치가 다르네.',lens:'렌즈 표면에도 물방울이 있어. 옆의 마른 천을 챙겨 닦아 보자.',store:'선생님께 허락받은 열쇠로 여는 창고야.',board:'함께 읽은 촬영 촬영 메모: 3번 강은호 → 4번 윤하나. 집게로 게시대에 고정하자.',hedge:'낮은 울타리야. 종이가 걸리면 넘어가지 말고 집게봉으로 꺼내자.',morning:'아침에는 바닥이 말라 있었어. 지금 상태와 달라.',forecast:'새 예보에는 비와 강한 바람이 있어. 선생님이 실내로 이동하자고 하셨어.',ground:'처마 밖에 새 빗방울 자국이 생겼어. 우리는 안에서 기록을 정리하자.',photo:'A는 출발 준비, B는 3번에서 4번으로 원고 전달, C는 빈 트랙과 빗방울 자국. 사진 옆 깃발 스케치도 비교하자.',log:'10:00 서풍·마른 땅 / 10:20 북풍·마른 땅 / 10:40 북풍·첫 비. 선생님은 이 세 관측 시각에 한 장씩 찍으셨어.',voice:'태오가 방송석에서 녹음했어. 은호: “하나야, 소개 원고 받아.” 하나: “받았어. 다음은 내가 읽을게.”'};
- const field={store:[10.4,34,6.3,17],board:[80,60,9,8],hedge:[84,42,15,13],flag:[43.6,10.4,3.2,4.4],lens:[11,75,7,8],cloth:[17,81,7,7],grass:[1,59,9,11],air:[63,37,12,10],sky:[34,2,25,14]};
- const labels={store:'창고 문',board:'촬영 메모 게시대',hedge:'낮은 울타리',flag:'깃발',lens:'카메라 렌즈',cloth:'마른 천',grass:'풀잎',air:'먼 골대',sky:'하늘',recorder:'녹음기',chest:'테이프 보관함',box:'기록 상자 안쪽',forecast:'새 예보',ground:'현재 바닥',morning:'아침 기록',photo:'인화 사진',log:'관측 일지',voice:'원고 전달 녹음'};
+ const field={store:[10.4,34,6.3,17],board:[80,60,9,8],hedge:[84,42,15,13],flag:[43.6,10.4,3.2,4.4],lens:[11,75,7,8],cloth:[17,81,7,7],grass:[1,59,9,11],air:[57,28,21,21],sky:[34,2,25,14]};
+ const labels={store:'창고 문',board:'촬영 메모 게시대',hedge:'낮은 울타리',flag:'깃발',lens:'카메라 렌즈',cloth:'마른 천',grass:'물방울 맺힌 풀잎',air:'골대 앞의 뿌연 공기',sky:'높은 하늘',recorder:'녹음기',chest:'테이프 보관함',box:'기록 상자 안쪽',forecast:'새 예보',ground:'현재 바닥',morning:'아침 기록',photo:'인화 사진',log:'관측 일지',voice:'원고 전달 녹음'};
  const scenery={
   shed:'문이 단단히 잠겨 있어. 안에서 대답하는 소리도 없어. 억지로 열지는 말자.',
   weatherBox:'백엽상이야. 햇빛과 비를 막고 바람은 통하게 되어 있어. 안의 온도계를 보호하는 집이지. 사람 숨을 곳은 아니네.',
@@ -21,19 +21,20 @@
   radio:'녹음기는 멈춰 있어. 지금 들리는 목소리를 여기서 틀어 놓은 건 아니야.',
   shelter:'의자에는 아무도 없어. 처마 아래라 바닥은 운동장보다 덜 젖었네.'
  };
- const outlines={store:'M10.7 34.4 L16.2 35 V50.5 L10.7 51 Z',lens:'M11.8 78 L12.5 77.5 V76.7 H14.4 L14.8 76.3 H15.7 L16.6 77.5 V81 L13.3 82.2 L11.8 81.6 Z',flag:'M44 10.8 L46.5 12.7 L44 14.3 Z',air:'M63.2 45.5 L64 38 L64.8 37.1 L74.6 37.6 V45.4 M64.8 37.1 V46 L74.6 45.4',grass:'M1 69 Q3 65 2 61 Q4 64 5 68 Q5 62 7 59 Q6 65 9 68',sky:'M35 12 Q35 7 40 7 Q42 2 48 5 Q55 3 57 8 Q60 9 58 13 Q45 16 35 12 Z',cloth:'M17 85 Q18 81 22 82 L24 87 Q21 86 18 88 Z',hedge:'M84 52 Q85 47 87 48 Q87 43 90 45 Q92 42 95 45 Q98 44 99 50 L98 54 L85 55 Z',board:'M80 60 L89 60 L89 66 L85 66 L85 68 M84 66 L80 66 Z',recorder:'M4 59 L9 50 L28 53 L29 73 L24 79 L4 77 Z',chest:'M33 51 L40 45 L66 49 L67 67 L59 73 L33 68 Z',box:'M33 51 L40 45 L66 49 L67 67 L59 73 L33 68 Z'};
+ const outlines={store:'M10.7 34.4 L16.2 35 V50.5 L10.7 51 Z',lens:'M11.8 78 L12.5 77.5 V76.7 H14.4 L14.8 76.3 H15.7 L16.6 77.5 V81 L13.3 82.2 L11.8 81.6 Z',flag:'M44 10.8 L46.5 12.7 L44 14.3 Z',air:'M58 44 Q56 39 59 35 Q62 31 67 33 Q72 30 76 34 Q80 38 76 44 Q68 49 58 44 Z',grass:'M1 69 Q3 65 2 61 Q4 64 5 68 Q5 62 7 59 Q6 65 9 68',sky:'M35 12 Q35 7 40 7 Q42 3 48 5 Q54 3 58 8 Q60 11 58 14 L36 14 Z',cloth:'M17 85 Q18 81 22 82 L24 87 Q21 86 18 88 Z',hedge:'M84 52 Q85 47 87 48 Q87 43 90 45 Q92 42 95 45 Q98 44 99 50 L98 54 L85 55 Z',board:'M80 60 L89 60 L89 66 L85 66 L85 68 M84 66 L80 66 Z',recorder:'M4 59 L9 50 L28 53 L29 73 L24 79 L4 77 Z',chest:'M33 51 L40 45 L66 49 L67 67 L59 73 L33 68 Z',box:'M33 51 L40 45 L66 49 L67 67 L59 73 L33 68 Z'};
  function mount(panel,mode,onDone,saved,onSave=()=>{},onSound=()=>{},options={}){
   let game=Playground.initial(mode,saved&&saved.game),peek=false,bag=false,detail='',reply='',dead=false,disposeEvidence=null;
   let typingTimer=null,finishTyping=null,exploring=false,completed=false;
   let evidenceState=saved&&saved.evidence,replySpeaker='소미';
-  let fogAnswers=Number.isInteger(saved?.fogAnswers)?Math.max(0,Math.min(2,saved.fogAnswers)):0;
-  const fogQuestion=()=>fogAnswers===0?'렌즈는 닦였는데 하나가 있는 쪽은 아직 흐려. 안개가 끼어 있는 곳을 그림에서 눌러 줄래?':'이번에는 발밑을 조심하자. 선생님 말씀으로는 밤에 비가 오지 않았대. 아침부터 이슬이 맺힌 곳을 그림에서 찾아 줘.';
+  const legacyFogAnswers=Number.isInteger(saved?.fogAnswers)?Math.max(0,Math.min(2,saved.fogAnswers)):0;
+  if(mode==='fog'&&!saved?.game?.weatherConcepts){
+   if(legacyFogAnswers>=1&&game.seen.includes('air'))game.weatherConcepts.fog=true;
+   if(legacyFogAnswers>=2&&game.seen.includes('grass'))game.weatherConcepts.dew=true;
+  }
   const prepare=options.prepare===true,legacyComplete=!!saved?.legacyComplete;
   descriptions.lens='카메라로 골대 쪽을 보려는데 렌즈 표면부터 흐려. 작은 물방울이 붙어 있네. 천으로 닦은 뒤 맨눈으로 본 풍경과 비교해 보자.';
   descriptions.board='원고를 건네는 강은호 → 다음 소개를 읽는 윤하나. 촬영 중 볼 수 있도록 메모를 집게로 고정하자.';
   descriptions.photo='A는 원고를 펼친 모습, B는 원고를 주고받는 모습, C는 빗방울 자국이 생긴 자리야. 사진 옆 깃발 스케치도 비교해 보자.';
-  // Sky has no single solid outline to trace; keep its label, not an invented cloud polygon.
-  outlines.sky='';
   for(const [id,,x,y,w,h,path] of root.HanaSearchView?.spots||[]){
    if(id==='cloth'||id==='camera'){
     const key=id==='camera'?'lens':id;field[key]=[x,y,w,h];outlines[key]=path;
@@ -49,13 +50,10 @@
   if(!saved?.clock)clock.unlimited();
   const esc=RoomScene.esc;
   const button=(action,label)=>'<button type="button" data-pg="'+action+'">'+esc(label)+'</button>';
-  const save=()=>onSave({game,clock:clock.snapshot(),evidence:evidenceState,fogAnswers});
+  const save=()=>onSave({game,clock:clock.snapshot(),evidence:evidenceState});
   function completeIfReady(){
    if(dead||completed)return completed;
-   if(mode==='fog'&&Playground.ready(game)){
-    if(fogAnswers===2)game=Playground.act(game,{type:'wait'});
-    else {detail='';exploring=false;if(!game.message.includes('그림에서'))game.message=fogQuestion();}
-   }
+   if(mode==='fog'&&Playground.ready(game)&&Playground.weatherConceptsReady(game))game=Playground.act(game,{type:'wait'});
    if(game.complete||(prepare&&game.initialFixed)){
     completed=true;save();onDone();return true;
    }
@@ -75,7 +73,7 @@
   }
   function hotspot(id,coords){
    const [x,y,w,h]=coords;
-   const path=outlines[id]??'M'+x+' '+y+' H'+(x+w)+' V'+(y+h)+' H'+x+' Z';
+   const path=outlines[id]||'M'+x+' '+y+' H'+(x+w)+' V'+(y+h)+' H'+x+' Z';
    return '<button type="button" class="room-hotspot '+(peek?'revealed':'')+'" data-pg="spot:'+id+'" aria-label="'+labels[id]+' 조사" style="left:'+x+'%;top:'+y+'%;width:'+w+'%;height:'+h+'%"><svg class="room-object-glow" viewBox="'+[x,y,w,h].join(' ')+'" preserveAspectRatio="none" aria-hidden="true"><path d="'+path+'"/></svg><span>'+labels[id]+'</span></button>';
   }
   function modal(title,body,wide=false){return '<section class="room-modal pg-modal '+(wide?'pg-wide':'')+'" role="dialog" aria-modal="true" aria-label="'+esc(title)+'"><div class="room-modal-content">'+button('close','닫기 · 장면으로')+'<h2>'+esc(title)+'</h2>'+body+'</div></section>';}
@@ -88,7 +86,7 @@
    if(mode==='fog'||mode==='wind')for(const entry of root.HanaSearchView?.spots||[]){
     const [id,label,x,y,w,h,path]=entry;
     if(!scenery[id]||(mode==='wind'&&id==='shed'))continue;
-    labels[id]=label;field[id]=[x,y,w,h];outlines[id]=path;
+    labels[id]=label;field[id]=[x,y,w,h];if(path)outlines[id]=path;
     spots+=hotspot(id,field[id]);
    }
    if(mode==='fog')for(const id of ['lens','cloth','grass','air','sky'])spots+=hotspot(id,field[id]);
@@ -98,6 +96,7 @@
    if(mode==='photo')spots=hotspot('voice',[12,68,17,20])+hotspot('photo',[28,68,29,21])+hotspot('log',[68,66,17,23]);
    panel.innerHTML=RoomScene.render({place:mode==='photo'?'1999 · 사진관':mode==='pack'?'1999 · 운동장 처마':mode==='locker'?'1999 · 방송석':'1999 · 운동장',goal:prepare?'09:50 · 장비 준비':titles[mode],art:art(),alt:mode==='photo'?'사진관 카운터 위 녹음기, 사진, 수첩':'겨울 운동장과 방송부 기록',peek,spots,showBag:false,showLook:false,selected:game.selected?'손에 든 물건: '+Playground.items[game.selected]:'',speaker:game.speaker,line:game.message||'목소리가 난 쪽을 확인하자. 벤치에 누가 두고 간 카메라도 있어.'});
    const picture=panel.querySelector('.room-picture');
+   if(mode==='fog')picture.insertAdjacentHTML('afterbegin','<div class="pg-fog-bank" aria-hidden="true"></div>');
    if(mode==='wind'){
     const end=Playground.windDirections[Math.min(game.windStep,2)];
     if(!prepare)picture.insertAdjacentHTML('beforeend','<div class="pg-flag-signal" aria-label="깃발 끝 '+(end==='east'?'동':'북')+'쪽">북 ↑<br><span>'+(end==='east'?'⚑ → 동':'⚑ ↑ 북')+'</span></div>');
@@ -107,7 +106,9 @@
    if(mode==='locker'&&game.lockerOpen)picture.insertAdjacentHTML('beforeend','<div class="pg-open-chest" aria-label="뚜껑이 열린 보관함"><i></i>'+(game.inventory.includes('tape')?'':'<span>▣</span>')+'</div>');
    if(mode==='locker'&&game.loaded)picture.insertAdjacentHTML('beforeend','<span class="pg-loaded-tape" aria-label="녹음기에 삽입한 테이프">▣</span>');
    if(mode==='pack')picture.insertAdjacentHTML('beforeend','<div class="pg-box-state '+(game.clean?'dry ':'')+(game.closed?'closed':'')+'" aria-label="'+(game.closed?'닫은 기록 상자':game.clean?'마른 상자':'젖은 상자')+'">'+(game.closed?'':game.packed.map(id=>'<span>'+(id==='notes'?'▤':'▣')+'</span>').join(''))+'</div>');
-   if(!exploring)panel.querySelector('.room-speech').insertAdjacentHTML('beforeend',button('advance','계속 · 탐색하기 ▼'));
+   const conceptForDetail={grass:'dew',air:'fog',sky:'cloud'}[detail];
+   const needsWeatherAnswer=mode==='fog'&&conceptForDetail&&!game.weatherConcepts[conceptForDetail];
+   if(!exploring&&!needsWeatherAnswer)panel.querySelector('.room-speech').insertAdjacentHTML('beforeend',button('advance','계속 · 탐색하기 ▼'));
    else panel.querySelector('.room-toolbar').insertAdjacentHTML('beforeend','<small class="pg-explore-hint">'+esc(game.message)+'</small>');
    if(timed)panel.querySelector('.room-toolbar').insertAdjacentHTML('beforeend','<small class="pg-clock" aria-live="off"></small>'+button('timer','시간 도전 설정'));
    if(legacyComplete)panel.querySelector('.room-speech').insertAdjacentHTML('beforeend',button('legacy-done','이전 완료 기록으로 계속 →'));
@@ -129,6 +130,9 @@
   function renderDetail(){
    if(mode==='fog'){
     if(detail==='lens'&&!game.wipedLens)panel.querySelector('.room-speech').insertAdjacentHTML('beforeend','<div class="pg-inline-actions">'+(game.inventory.includes('cloth')?button('use:cloth:lens','천으로 렌즈 닦기'):button('take:cloth','옆의 마른 천 집기'))+'</div>');
+    const concepts={grass:['dew','이슬'],air:['fog','안개'],sky:['cloud','구름']};
+    const current=concepts[detail];
+    if(current&&!game.weatherConcepts[current[0]])panel.querySelector('.room-speech').insertAdjacentHTML('beforeend','<form class="pg-weather-answer" data-weather="'+current[0]+'"><label for="weather-'+current[0]+'">관찰한 것의 이름</label><input id="weather-'+current[0]+'" name="weather-answer" data-weather-input="'+current[0]+'" autocomplete="off" maxlength="10" placeholder="직접 써 보세요" aria-label="'+current[1]+' 이름 입력"><button type="submit">확인</button></form>');
     return;
    }
    let title=labels[detail]||'살펴보기',body='<p>'+esc(descriptions[detail]||game.message)+'</p>',wide=false;
@@ -151,13 +155,6 @@
   }
   function spot(id){
    game.selected='';
-   if(mode==='fog'&&Playground.ready(game)&&fogAnswers<2){
-    const expected=fogAnswers===0?'air':'grass';
-    exploring=false;detail='';reply='';game.speaker='소미';
-    if(id===expected){fogAnswers++;game.message=fogAnswers===1?'맞아. 골대 앞의 공기 속 물방울이 안개야. '+fogQuestion():'맞아. 풀잎 표면에 맺힌 물방울이 이슬이야. 미끄러우니 천천히 가자.';onSound('paper');}
-    else game.message=(id==='sky'?'하늘 높은 곳은 구름이야. ':id==='lens'?'렌즈는 이미 닦았어. ':'물방울이 어디에 있는지 다시 보자. ')+fogQuestion();
-    return;
-   }
    if(scenery[id]){exploring=false;reply='';game.speaker='소미';game.message=scenery[id];detail='';onSound('paper');return;}
    if(id==='cloth'){doAct('take','cloth');detail='lens';return;}
    doAct('inspect',id);detail=id;
@@ -171,12 +168,23 @@
   }
   function advance(){
    if(finishTyping){finishTyping();return;}
-   if(mode==='fog'&&Playground.ready(game)&&fogAnswers<2){exploring=true;game.message=fogQuestion();save();render();return;}
    if(detail==='evidence')return;
    if(reply){game.speaker=replySpeaker;game.message=reply;reply='';render();return;}
    detail='';exploring=true;
    game.message=mode==='fog'?(!game.wipedLens?(game.seen.includes('lens')?'카메라 곁의 천으로 렌즈를 닦고, 맨눈으로 본 골대와 비교해 보자.':'벤치의 카메라는 누가 두고 갔을까? 목소리가 난 골대 쪽도 살펴보자.'):'렌즈는 닦였어. 먼 골대·풀잎·하늘에 보이는 것을 비교해 보자.'):'주변 사물을 눌러 살펴보자. 필요한 일을 마치면 이야기가 이어져.';
    save();render();
+  }
+  function answerWeather(concept){
+   const input=panel.querySelector('[data-weather-input="'+concept+'"]');
+   game=Playground.act(game,{type:'answer-weather',value:concept,answer:input?.value||''});
+   if(game.weatherConcepts[concept])detail='';
+   exploring=false;onSound('paper');save();
+   if(!completeIfReady())render(true);
+  }
+  function submit(e){
+   const form=e.target.closest('form[data-weather]');
+   if(!form||!panel.contains(form))return;
+   e.preventDefault();answerWeather(form.dataset.weather);
   }
   function click(e){
    if(dead||completed)return;
@@ -209,9 +217,9 @@
   function keydown(e){if((e.key===' '||e.key==='Enter')&&!e.target.closest('button,input,textarea,select,.room-modal,.pg-action-strip')){e.preventDefault();advance();return;}const modal=panel.querySelector('.room-modal');if(!modal)return;if(e.key==='Escape'){e.preventDefault();bag=false;detail='';render();}if(e.key==='Tab'){const nodes=[...modal.querySelectorAll('button,input,select,textarea,summary')].filter(n=>!n.disabled&&n.getClientRects().length);const first=nodes[0],last=nodes[nodes.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}}
   function updateClock(){const s=clock.tick(),out=panel.querySelector('.pg-clock');if(out)out.textContent=s.unlimited?'시간 제한 없음':s.expired?'태오: 내가 잡고 있어! 천천히 이어 가자.':Math.ceil(s.remaining/1000)+'초 · '+(s.running?'진행 중':'읽는 동안 멈춤');}
   function hidden(){if(document.hidden){clock.pause();save();}}
-  panel.classList.add('room-panel','playground-panel');panel.addEventListener('click',click);panel.addEventListener('keydown',keydown);document.addEventListener('visibilitychange',hidden);
+  panel.classList.add('room-panel','playground-panel');panel.addEventListener('click',click);panel.addEventListener('submit',submit);panel.addEventListener('keydown',keydown);document.addEventListener('visibilitychange',hidden);
   const interval=setInterval(()=>{if(!dead)updateClock();},500);save();render();
-  return ()=>{dead=true;clearInterval(typingTimer);finishTyping=null;if(disposeEvidence)disposeEvidence();clock.pause();save();clock.dispose();clearInterval(interval);panel.removeEventListener('click',click);panel.removeEventListener('keydown',keydown);document.removeEventListener('visibilitychange',hidden);panel.classList.remove('room-panel','playground-panel','pg-exploring');};
+  return ()=>{dead=true;clearInterval(typingTimer);finishTyping=null;if(disposeEvidence)disposeEvidence();clock.pause();save();clock.dispose();clearInterval(interval);panel.removeEventListener('click',click);panel.removeEventListener('submit',submit);panel.removeEventListener('keydown',keydown);document.removeEventListener('visibilitychange',hidden);panel.classList.remove('room-panel','playground-panel','pg-exploring');};
  }
  root.PlaygroundView={mount};
 })(typeof window==='undefined'?globalThis:window);

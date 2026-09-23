@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const {R,go,work,manuscript}=require('./chapter2-test-helpers.cjs');
+let s=R.preview('prep');s.seen.doorOpen=false;s.seen.secured=true;
+s=go(s,'inspect','tape');assert.equal(s.question,'manuscript');
+s=work(s,[['error','1'],['repair','condense']]);assert.ok(!s.answers.manuscript);assert.ok(!s.inventory.includes('tape'));
+s=R.initial(JSON.parse(JSON.stringify(s)));s=work(s,manuscript);assert.ok(s.answers.manuscript);assert.ok(s.inventory.includes('tape'));
+s=go(s,'select','tape');s=go(s,'inspect','recorder');
+s=go(s,'operate','play');assert.ok(!s.seen.recordingHeard);
+s=go(s,'operate','rewind');s=R.act(s,{type:'operate',target:'play'});
+assert.equal(s.seen.doorOpen,false);assert.equal(s.after,'reveal-door');
+console.log('원고 오류 수정·재시도·복원·녹음 전 닫힌 문 통과');

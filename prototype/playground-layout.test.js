@@ -6,12 +6,14 @@ function host(){
  const listeners={};
  const node={insertAdjacentHTML(_where,html){panel.html+=html;},focus(){}};
  const classes=new Set();
- const panel={html:'',children:[],classes,classList:{add(...names){names.forEach(n=>classes.add(n));},remove(...names){names.forEach(n=>classes.delete(n));},toggle(name,on){if(on)classes.add(name);else classes.delete(name);}},
+ const panel={html:'',inputValue:'',children:[],classes,classList:{add(...names){names.forEach(n=>classes.add(n));},remove(...names){names.forEach(n=>classes.delete(n));},toggle(name,on){if(on)classes.add(name);else classes.delete(name);}},
   set innerHTML(html){this.html=html;},get innerHTML(){return this.html;},
-  querySelector(sel){return sel==='.room-modal'||sel==='.pg-clock'?null:node;},
+  querySelector(sel){if(sel==='.room-modal'||sel==='.pg-clock')return null;if(sel.startsWith('[data-weather-input='))return {value:this.inputValue};return node;},
   insertAdjacentHTML(_where,html){this.html+=html;},
   addEventListener(name,fn){listeners[name]=fn;},removeEventListener(name){delete listeners[name];},
-  click(action){listeners.click({target:{closest(){return action?{dataset:{pg:action}}:null;}}});}
+  contains(){return true;},
+  click(action){listeners.click({target:{closest(){return action?{dataset:{pg:action}}:null;}}});},
+  submit(concept,answer){this.inputValue=answer;listeners.submit({preventDefault(){},target:{closest(){return {dataset:{weather:concept}};}}});}
  };
  return panel;
 }
@@ -41,16 +43,13 @@ assert.match(panel.html,/use:cloth:lens/);
 panel.click('use:cloth:lens');assert.equal(progress.game.wipedLens,true,'직접 렌즈 닦기');
 assert.doesNotMatch(panel.html,/pg-clean-lens/);
 panel.click('spot:grass');
-panel.click();
-assert.doesNotMatch(panel.html,/pg-action-strip/,'설명 완료 후 배경 클릭으로 탐색 복귀');
-assert.ok(panel.classes.has('pg-exploring'),'탐색 상태에서는 대화창을 가리지 않는다');
-assert.match(panel.html,/카메라|골대/,'다음 조사 안내');
-panel.click('spot:air');assert.equal(completed,0);
-panel.click('spot:sky');assert.equal(completed,0,'관찰 후 짧은 날씨 적용 문제');
-assert.match(panel.html,/안개/);
-panel.click('spot:sky');assert.equal(completed,0,'구름 오답은 재시도');
-panel.click('spot:air');assert.equal(completed,0,'안개 위치 찾기');
-panel.click('spot:grass');assert.equal(completed,1,'이슬 위치 찾기 후 자동 합류');
+assert.match(panel.html,/name="weather-answer"/,'관찰한 개념은 직접 입력한다');
+panel.submit('dew','물');assert.equal(progress.game.weatherConcepts.dew,false,'오답은 재시도');
+panel.submit('dew','이슬');assert.equal(progress.game.weatherConcepts.dew,true);
+panel.click('spot:air');panel.submit('fog','안개');assert.equal(completed,0);
+panel.click('spot:sky');assert.equal(completed,0,'세 번째 개념도 직접 답한다');
+panel.submit('cloud','구름');assert.equal(completed,1,'세 개념 입력 뒤 자동 합류');
+assert.match(panel.html,/pg-fog-bank/,'먼 골대 앞 안개가 시각적으로 보인다');
 panel.click('spot:sky');assert.equal(completed,1,'중복 완료 방지');
 cleanup();
 for(const [mode,options,actions] of [

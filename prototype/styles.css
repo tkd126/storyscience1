@@ -54,7 +54,7 @@
 .salt-decisions label {display:block;margin:12px 0;}
 .room-object-glow path {fill:none;stroke:#fff0bd;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke;}
 .room-hotspot:hover .room-object-glow,.room-hotspot:focus-visible .room-object-glow,.room-hotspot.revealed .room-object-glow {opacity:1;}
-.room-hotspot:focus-visible>span,.room-hotspot.revealed>span { opacity:1; }
+.room-hotspot:hover>span,.room-hotspot:focus-visible>span,.room-hotspot.revealed>span { opacity:1; }
 .inventory-items {display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;}
 .inventory-items article {padding:16px;border:1px solid #b3a47c;border-radius:12px;background:#fff9e9;}
 .inventory-symbol {font-size:70px;color:#94703d;display:block;text-align:center;}

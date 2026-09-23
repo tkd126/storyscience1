@@ -46,8 +46,40 @@ function inspectAll(state, ids) {
   assert.equal(state.complete, false, 'waiting early must not complete');
   state = inspectAll(state, ['grass', 'air', 'sky']);
   assert.equal(P.ready(state), true);
+  for (const [value, answer] of [['dew', '이슬'], ['fog', '안개'], ['cloud', '구름']]) {
+    state = P.act(state, { type: 'answer-weather', value, answer });
+  }
   state = act(state, 'wait');
   assert.equal(state.complete, true);
+})();
+
+(function fogConceptsRequireObservedEvidenceAndTypedAnswers() {
+  let state = P.initial('fog');
+  assert.deepEqual(state.weatherConcepts, { dew: false, fog: false, cloud: false });
+  state = P.act(state, { type: 'answer-weather', value: 'dew', answer: '이슬' });
+  assert.equal(state.weatherConcepts.dew, false, '풀잎을 보기 전에는 용어만 맞혀도 통과하지 않는다');
+
+  state = act(state, 'inspect', 'grass');
+  state = P.act(state, { type: 'answer-weather', value: 'dew', answer: '물' });
+  assert.equal(state.weatherConcepts.dew, false, '오답은 같은 관찰에서 다시 시도한다');
+  assert.match(state.message, /풀잎|물방울/);
+  state = P.act(state, { type: 'answer-weather', value: 'dew', answer: '  이슬  ' });
+  assert.equal(state.weatherConcepts.dew, true, '앞뒤 공백을 무시하고 이슬을 기록한다');
+
+  state = inspectAll(state, ['air', 'sky', 'lens']);
+  state = act(state, 'take', 'cloth');
+  state = act(state, 'select', 'cloth');
+  state = act(state, 'use', 'lens');
+  state = P.act(state, { type: 'answer-weather', value: 'fog', answer: '안개' });
+  state = act(state, 'wait');
+  assert.equal(state.complete, false, '구름 설명 전에는 다음 이야기로 합류하지 않는다');
+  state = P.act(state, { type: 'answer-weather', value: 'cloud', answer: '구름' });
+  assert.equal(P.weatherConceptsReady(state), true);
+  state = act(state, 'wait');
+  assert.equal(state.complete, true, '세 개념을 직접 설명하면 자동 합류 조건을 만족한다');
+
+  const restored = P.initial('fog', JSON.parse(JSON.stringify(state)));
+  assert.deepEqual(restored.weatherConcepts, { dew: true, fog: true, cloud: true });
 })();
 
 (function windRequiresOpeningTheStoreAndKeepsProgressOnMistakes() {

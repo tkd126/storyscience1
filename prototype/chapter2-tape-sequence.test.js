@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+const {R,go,work,editing}=require('./chapter2-test-helpers.cjs');
+let s=R.preview('coast');s.answers.tapeBreeze=true;
+s=go(s,'inspect','last-recording');assert.ok(!s.complete);
+s=go(s,'inspect','day-coast');assert.equal(s.question,'editing');assert.ok(!s.answers.editing);
+s=work(s,[['dayTemp','land'],['order','day-night']]);assert.ok(!s.answers.editing);
+s=R.initial(JSON.parse(JSON.stringify(s)));assert.equal(s.work.editing.dayTemp,'land');
+s=work(s,editing);assert.ok(s.answers.editing);assert.equal(s.seen.playback,2);assert.ok(!s.complete);
+s=go(s,'inspect','last-recording');assert.ok(s.complete);
+console.log('편집실 복합 기록 연결·재시도·순차 재생·결말 통과');

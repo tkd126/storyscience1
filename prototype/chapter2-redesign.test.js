@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict');
+const R=require('./chapter2-v3-state'),A=require('./chapter2-active');
+const quiet=s=>{let n=0;while(s.dialogue.length&&n++<100)s=R.act(s,{type:'next'});return s;};
+let s=R.preview('prep');s.seen.doorOpen=false;s=quiet(R.act(s,{type:'inspect',target:'door'}));
+assert.equal(!!s.seen.doorOpen,false,'문 먼저 클릭해도 마지막 녹음 전에는 열리지 않는다');
+let w=R.preview('weather');w=R.act(w,{type:'inspect',target:'air-balance'});
+assert.notEqual(w.after,'lab-mass','쪽지보다 저울을 먼저 눌러도 실험을 시작하지 않는다');
+let m={room:'weather',answers:{}};A.act(m,{type:'lab-open',target:'mass'},()=>{});
+A.act(m,{type:'lab-set',target:'volume',value:'same'},()=>{});A.act(m,{type:'lab-set',target:'measure',value:'yes'},()=>{});
+assert.equal(!!m.lab.measured,false,'예측과 근거 전에는 결과 숨김');
+A.act(m,{type:'lab-set',target:'prediction',value:'cold'},()=>{});A.act(m,{type:'lab-set',target:'reason',value:'density'},()=>{});
+A.act(m,{type:'lab-set',target:'measure',value:'yes'},()=>{});assert.equal(m.lab.measured,true);
+console.log('문·단서 선행·실험 예측 회귀 통과');
+let p=R.preview('prep');p.seen.secured=true;p=quiet(R.act(p,{type:'inspect',target:'tape'}));
+assert.equal(p.question,'manuscript','테이프에서는 보관 암호 대신 원고 오류를 확인');
+let c=R.preview('coast');c.answers.tapeBreeze=true;c=quiet(R.act(c,{type:'inspect',target:'day-coast'}));
+assert.equal(!!c.answers.sea,false,'앞선 해풍 정답으로 편집 활동 자동 완료 금지');
+assert.equal(c.question,'editing');

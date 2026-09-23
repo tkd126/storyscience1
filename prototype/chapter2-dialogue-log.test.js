@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict');
+const R=require('./chapter2-v3-state');
+let s=R.initial();const first=s.dialogue[0];
+s=R.act(s,{type:'next'});
+assert.deepEqual(s.history,[first]);
+assert.deepEqual(R.initial(s).history,[first]);
+s.history=Array.from({length:80},()=>first);
+s=R.act(s,{type:'next'});
+assert.equal(s.history.length,80);
+console.log('2편 대화 기록 저장·복원 통과');

@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict'),R=require('./chapter2-v3-state');
+let s=R.preview('prep');s.seen={inserted:true,rewound:true,doorOpen:true};
+s.answers.manuscript=true;
+s=R.act(s,{type:'operate',target:'play'});
+assert.equal(s.after,'reveal-door','원고 확인 뒤 녹음에서 문 열림으로 이어진다');
+s=R.preview('weather');s.seen.noteOpened=true;s=R.act(s,{type:'inspect',target:'air-balance'});
+assert.ok(s.dialogue.length,'저울을 조사한 이유부터 대화한다');
+for(let i=0;s.dialogue.length&&i<30;i++)s=R.act(s,{type:'next'});
+assert.equal(s.lab?.kind,'mass','대화 뒤 저울 조작으로 연결');
+s=R.preview('prep');s=R.act(s,{type:'lab-open',target:'mass'});
+assert.equal(s.lab,undefined,'준비실에 공기 실험 없음');
+console.log('실험의 이야기 진입 경로 통과');

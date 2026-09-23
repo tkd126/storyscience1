@@ -17,11 +17,15 @@ s=drain(H.act(s,'goal'));
 assert.ok(!render(s).includes('hana-first-meeting-v1.png'),'발견 전에는 하나 그림을 숨긴다');
 s=drain(H.act(s,'approach'));
 assert.ok(render(s).includes('class="hana-meeting"'),'탐색 중에는 인물에게 물건을 사용할 수 있다');
+assert.ok(render(s).includes('hana-mystery'),'이름과 기억을 확인하기 전 하나는 실루엣으로 보인다');
 const talking=H.act(s,'eunho');
 assert.ok(!render(s).includes('data-room-action="bag"'),'이 구간에는 가방 조작 없음');
 assert.ok(!render(talking).includes('class="hana-meeting"'),'대화 중 탐색 인물을 중복 렌더하지 않는다');
 assert.ok(render(talking).includes('room-dialogue-portrait'));
 assert.ok(render(drain(talking)).includes('class="hana-meeting"'),'대화 후 탐색 인물 복원');
+let revealed=drain(H.act(s,'eunho'));
+assert.equal(revealed.remembered,true);
+assert.ok(!render(revealed).includes('hana-mystery'),'공유 기억을 확인한 뒤에만 하나의 모습이 드러난다');
 console.log('하나 탐색 인물 중복 방지 통과');
 
 // Run the actual mount with a deterministic clock and minimal DOM adapter.

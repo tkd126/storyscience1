@@ -1,0 +1,18 @@
+const assert=require('node:assert/strict');
+const R=require('./chapter2-v3-state');
+let s=R.preview('archive');s.question='photo';
+s=R.act(s,{type:'evidence',target:'east',value:'2번 깃발'});
+assert.equal(s.photoMarks['2번 깃발'],'east');
+assert.equal(s.photoMarks['1번 깃발'],undefined);
+s=R.act(s,{type:'evidence',target:'east',value:'1번 깃발'});
+s=R.act(s,{type:'evidence',target:'east',value:'2번 깃발'});
+assert.equal(s.seen['evidence-east'],true);
+console.log('사진별 표시 분리 통과');
+let retry=R.preview('archive');retry.question='photo';
+for(const [target,value] of [['clear','1번 골대 뒤'],['east','1번 깃발'],['fog','2번 골대 뒤'],['east','2번 깃발']])retry=R.act(retry,{type:'evidence',target,value});
+retry=R.act(retry,{type:'answer',target:'photo',value:'2'});
+assert.equal(retry.answers.photo,true,'다른 사진에 남은 표시는 정답 사진의 근거를 무효화하지 않는다');
+let missing=R.preview('archive');missing.question='photo';
+for(const [target,value] of [['fog','3번 골대 뒤'],['east','1번 깃발']])missing=R.act(missing,{type:'evidence',target,value});
+missing=R.act(missing,{type:'answer',target:'photo',value:'2'});
+assert.equal(missing.answers.photo,true,'이전 저장의 표시는 무시하고 사진 번호로 판정한다');

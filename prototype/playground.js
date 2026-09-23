@@ -69,6 +69,7 @@
       message: '',
       speaker: '소미',
       wipedLens: false,
+      weatherConcepts: { dew: false, fog: false, cloud: false },
       safe: mode === 'pack',
     };
   }
@@ -88,6 +89,11 @@
     if (state.mode === 'locker') return hasEvery(state, seenIds.locker);
     if (state.mode === 'pack') return state.safe;
     return hasEvery(state, seenIds.photo);
+  }
+
+  function weatherConceptsReady(state) {
+    return !!state && state.mode === 'fog' &&
+      ['dew', 'fog', 'cloud'].every((id) => state.weatherConcepts?.[id] === true);
   }
 
   function initial(mode, saved) {
@@ -112,7 +118,14 @@
 
     if (mode === 'fog') {
       state.wipedLens = !!saved.wipedLens && state.seen.includes('lens') && state.inventory.includes('cloth');
-      state.complete = !!saved.complete && isReady(state);
+      const savedConcepts = saved.weatherConcepts && typeof saved.weatherConcepts === 'object'
+        ? saved.weatherConcepts : {};
+      state.weatherConcepts = {
+        dew: savedConcepts.dew === true && state.seen.includes('grass'),
+        fog: savedConcepts.fog === true && state.seen.includes('air'),
+        cloud: savedConcepts.cloud === true && state.seen.includes('sky'),
+      };
+      state.complete = !!saved.complete && isReady(state) && weatherConceptsReady(state);
     } else if (mode === 'wind') {
       const legacy = saved.version !== 2;
       state.permission = legacy || saved.permission === true;
@@ -178,9 +191,9 @@
     if (action.type === 'inspect' && seenIds.fog.includes(action.value)) {
       addOnce(state.seen, action.value);
       if (action.value === 'lens') return respond(state, '소미', '카메라로 골대 쪽을 보면 누가 있는지 알 수 있을까? 아, 렌즈 표면이 흐려. 가까이 보니 작은 물방울이 붙어 있어. 옆의 천으로 닦아 보자.');
-      if (action.value === 'grass') return respond(state, '소미', '골대 쪽으로 가려는데 신발이 젖었어. 풀잎 표면에 작은 물방울이 붙어 있네. 바닥도 미끄러우니 뛰지 말자.');
-      if (action.value === 'air') return respond(state, '소미', '먼 골대 앞 공기 속에 작은 물방울이 떠 있어.');
-      return respond(state, '소미', '높은 하늘에는 물방울이 모인 구름이 보여.');
+      if (action.value === 'grass') return respond(state, '소미', '나뭇잎과 풀잎 위에 작은 물방울이 있네. 밤에 비도 오지 않았다는데 갑자기 물이 생긴 걸까? 이런 물방울을 뭐라고 부르더라?');
+      if (action.value === 'air') return respond(state, '소미', '가까운 카메라는 또렷한데 먼 골대 앞은 뿌옇게 보여. 공기 중의 작은 물방울 때문에 가까운 곳도 흐려 보이는 현상을 뭐라고 하지?');
+      return respond(state, '소미', '높은 하늘에 작은 물방울이나 얼음 알갱이가 모여 떠 있어. 이것을 뭐라고 부르지?');
     }
     if (action.type === 'take' && action.value === 'cloth') {
       if (!state.seen.includes('lens')) return respond(state, '소미', '렌즈 가까이를 먼저 살펴보자.');
@@ -196,8 +209,32 @@
       state.wipedLens = true;
       return respond(state, '소미', '렌즈는 맑아졌는데 먼 골대는 여전히 뿌옇네. 렌즈 밖을 관찰해 보자.');
     }
+    if (action.type === 'answer-weather') {
+      const evidence = { dew: 'grass', fog: 'air', cloud: 'sky' };
+      const answers = { dew: '이슬', fog: '안개', cloud: '구름' };
+      const concept = action.value;
+      if (!answers[concept]) return respond(state, '소미', '지금 본 모습을 다시 살펴보자.');
+      if (!state.seen.includes(evidence[concept])) return respond(state, '소미', '이름부터 맞히지 말고, 그림 속 모습을 먼저 관찰해 보자.');
+      const answer = typeof action.answer === 'string' ? action.answer.replace(/\s+/g, '') : '';
+      if (answer !== answers[concept]) {
+        const hints = {
+          dew: '비가 오지 않은 밤이 지난 뒤 풀잎 표면에 맺힌 물방울이야. 첫 글자는 ‘이’야.',
+          fog: '구름과 같은 작은 물방울이 땅 가까이에 떠서 앞을 흐리게 해. 첫 글자는 ‘안’이야.',
+          cloud: '작은 물방울이나 얼음 알갱이가 높은 하늘에 모여 있는 것이야. 첫 글자는 ‘구’야.',
+        };
+        return respond(state, '소미', hints[concept]);
+      }
+      state.weatherConcepts[concept] = true;
+      const replies = {
+        dew: '맞아, 이슬이야. 밤사이 차가워진 풀잎 표면에 공기 중 수증기가 물방울로 맺힌 거야.',
+        fog: '맞아, 안개야. 작은 물방울이 땅 가까운 공기 중에 떠 있어서 먼 골대가 흐려 보였어.',
+        cloud: '맞아, 구름이야. 작은 물방울이나 얼음 알갱이가 높은 하늘에 모여 있어.',
+      };
+      return respond(state, '소미', replies[concept]);
+    }
     if (action.type === 'wait') {
       if (!isReady(state)) return respond(state, '소미', '기다리기 전에 풀잎, 공기, 하늘과 닦은 렌즈를 모두 비교해 보자.');
+      if (!weatherConceptsReady(state)) return respond(state, '소미', '관찰한 세 모습을 이름으로 정리하고 가까이 가자.');
       state.complete = true;
       return respond(state, '소미', '렌즈를 닦아도 맨눈으로 봐도 골대 쪽은 흐려. 카메라 고장이 아니라 안개였어. 선생님과 가까이 가서 목소리 주인을 확인하자.');
     }
@@ -385,7 +422,7 @@
     return actPhoto(state, safeAction);
   }
 
-  const api = { initial, act, ready: isReady, cards, items, windDirections };
+  const api = { initial, act, ready: isReady, weatherConceptsReady, cards, items, windDirections };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.Playground = api;
 })(typeof window === 'undefined' ? globalThis : window);

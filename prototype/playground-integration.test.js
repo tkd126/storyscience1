@@ -2,9 +2,9 @@ const assert=require('node:assert/strict');
 const C=require('./chapter2');
 const fs=require('node:fs');
 const html=fs.readFileSync(__dirname+'/index.html','utf8');
-const previewEntry=html.match(/<option value="([^"]+)">바람과 촬영 메모<\/option>/)?.[1];
 const s=C.build();
-assert.equal(s[previewEntry]?.prepare,true,'wind preview must enter teacher permission and tool preparation');
+// Archived v2 preparation remains testable; the live menu now enters v3.
+assert.equal(s['c2-prepare']?.prepare,true,'archived wind activity retains teacher permission');
 for(const id of ['c2-fog','c2-wind','c2-locker','c2-schedule','c2-photo']) {
  assert.equal(s[id]?.experiment,'playground',id+' must use physical exploration');
 }

@@ -1,0 +1,13 @@
+const assert=require('node:assert/strict');
+const {R,go}=require('./chapter2-test-helpers.cjs');
+const I=require('./chapter2-investigation');
+let s=R.preview('weather');s.question='weather-evidence';s.work={'weather-evidence':{}};
+assert.ok(!I.render(s,x=>x).includes('data-work-key="claims"'),'첫 화면에는 방향 문제만 표시');
+s=go(s,'work-set','claims','1');assert.ok(!s.work['weather-evidence'].claims,'다음 문제 조기 입력 차단');
+s=go(s,'work-set','direction','left');s=go(s,'work-check');assert.ok(!s.work['weather-evidence'].directionDone,'오답은 현재 단계 유지');
+s=go(s,'work-set','direction','right');s=go(s,'work-check');assert.ok(s.work['weather-evidence'].directionDone);
+assert.ok(!I.render(s,x=>x).includes('data-work-key="direction"'),'두 번째 화면에는 날씨 문제만 표시');
+s=R.initial(JSON.parse(JSON.stringify(s)));assert.ok(s.work['weather-evidence'].directionDone,'저장 후 단계 보존');
+s=go(s,'work-set','claims','1');s=go(s,'work-set','claims','3');s=go(s,'work-check');assert.ok(!s.answers.pressure);
+s=go(s,'work-set','claims','3');s=go(s,'work-set','claims','2');s=go(s,'work-check');assert.ok(s.answers.pressure&&s.answers.high&&s.answers.low);
+console.log('일기도 한 문제씩 진행·오답·단계 저장 통과');
